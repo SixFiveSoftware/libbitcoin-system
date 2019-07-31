@@ -41,3 +41,9 @@ libbitcoin_1.0.10-1_amd64.deb
 /examples/uri
 /examples/error.log
 /examples/debug.log
+/examples/libbitcoin-examples
+
+test.log
+test-suite.log
+*test_runner.sh.*
+/test/libbitcoin-test
