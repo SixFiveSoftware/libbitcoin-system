@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <bitcoin/bitcoin/coinninja/mnemonic.hpp>
+#include <bitcoin/bitcoin/coinninja/wallet/mnemonic.hpp>
 #include <bitcoin/bitcoin/wallet/mnemonic.hpp>
 
 namespace coinninja {

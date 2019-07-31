@@ -21,8 +21,8 @@
  * THE SOFTWARE.
  */
 
-#include <bitcoin/bitcoin/coinninja/bech32.hpp>
-#include <bitcoin/bitcoin/coinninja/segwit_address.hpp>
+#include <bitcoin/bitcoin/coinninja/address/bech32.hpp>
+#include <bitcoin/bitcoin/coinninja/address/segwit_address.hpp>
 
 namespace
 {

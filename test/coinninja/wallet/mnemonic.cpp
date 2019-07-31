@@ -21,7 +21,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include <bitcoin/bitcoin.hpp>
-#include <bitcoin/bitcoin/coinninja/mnemonic.hpp>
+#include <bitcoin/bitcoin/coinninja/wallet/mnemonic.hpp>
 
 using namespace bc;
 using namespace bc::wallet;
