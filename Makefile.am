@@ -51,6 +51,7 @@ src_libbitcoin_la_SOURCES = \
     src/chain/script.cpp \
     src/chain/transaction.cpp \
     src/chain/witness.cpp \
+    src/coinninja/wallet/derivation_path.cpp \
     src/coinninja/wallet/mnemonic.cpp \
     src/coinninja/address/bech32.cpp \
     src/coinninja/address/segwit_address.cpp \
@@ -375,6 +376,7 @@ include_bitcoin_bitcoin_chain_HEADERS = \
 
 include_bitcoin_bitcoin_coinninja_walletdir = ${includedir}/bitcoin/bitcoin/coinninja/wallet
 include_bitcoin_bitcoin_coinninja_wallet_HEADERS = \
+    include/bitcoin/bitcoin/coinninja/wallet/derivation_path.hpp \
     include/bitcoin/bitcoin/coinninja/wallet/mnemonic.hpp
 
 include_bitcoin_bitcoin_coinninja_addressdir = ${includedir}/bitcoin/bitcoin/coinninja/address
