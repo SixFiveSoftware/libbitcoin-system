@@ -29,7 +29,7 @@ namespace coinninja {
     namespace wallet {
         word_list create_mnemonic(const data_slice &entropy, const dictionary &lexicon=language::en);
     } // namespace wallet
-} // namespace CoinNinja
+} // namespace coinninja
 
 
 #endif

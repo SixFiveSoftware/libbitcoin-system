@@ -32,5 +32,5 @@ namespace coinninja {
                 throw "Invalid mnemonic";
             }
         }
-    }
-} // namespace CoinNinja
+    } // namespace wallet
+} // namespace coinninja
