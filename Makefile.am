@@ -52,6 +52,8 @@ src_libbitcoin_la_SOURCES = \
     src/chain/transaction.cpp \
     src/chain/witness.cpp \
     src/coinninja/mnemonic.cpp \
+    src/coinninja/bech32.cpp \
+    src/coinninja/segwit_address.cpp \
     src/config/authority.cpp \
     src/config/base16.cpp \
     src/config/base2.cpp \
@@ -245,6 +247,7 @@ test_libbitcoin_test_SOURCES = \
     test/chain/script.hpp \
     test/chain/transaction.cpp \
     test/coinninja/mnemonic.cpp \
+    test/coinninja/segwit_address.cpp \
     test/config/authority.cpp \
     test/config/base58.cpp \
     test/config/checkpoint.cpp \
@@ -372,7 +375,9 @@ include_bitcoin_bitcoin_chain_HEADERS = \
 
 include_bitcoin_bitcoin_coinninjadir = ${includedir}/bitcoin/bitcoin/coinninja
 include_bitcoin_bitcoin_coinninja_HEADERS = \
-    include/bitcoin/bitcoin/coinninja/mnemonic.hpp
+    include/bitcoin/bitcoin/coinninja/mnemonic.hpp \
+    include/bitcoin/bitcoin/coinninja/bech32.hpp \
+    include/bitcoin/bitcoin/coinninja/segwit_address.hpp
 
 include_bitcoin_bitcoin_configdir = ${includedir}/bitcoin/bitcoin/config
 include_bitcoin_bitcoin_config_HEADERS = \
