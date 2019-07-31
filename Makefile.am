@@ -373,9 +373,12 @@ include_bitcoin_bitcoin_chain_HEADERS = \
     include/bitcoin/bitcoin/chain/transaction.hpp \
     include/bitcoin/bitcoin/chain/witness.hpp
 
-include_bitcoin_bitcoin_coinninjadir = ${includedir}/bitcoin/bitcoin/coinninja
-include_bitcoin_bitcoin_coinninja_HEADERS = \
-    include/bitcoin/bitcoin/coinninja/wallet/mnemonic.hpp \
+include_bitcoin_bitcoin_coinninja_walletdir = ${includedir}/bitcoin/bitcoin/coinninja/wallet
+include_bitcoin_bitcoin_coinninja_wallet_HEADERS = \
+    include/bitcoin/bitcoin/coinninja/wallet/mnemonic.hpp
+
+include_bitcoin_bitcoin_coinninja_addressdir = ${includedir}/bitcoin/bitcoin/coinninja/address
+include_bitcoin_bitcoin_coinninja_address_HEADERS = \
     include/bitcoin/bitcoin/coinninja/address/bech32.hpp \
     include/bitcoin/bitcoin/coinninja/address/segwit_address.hpp
 
