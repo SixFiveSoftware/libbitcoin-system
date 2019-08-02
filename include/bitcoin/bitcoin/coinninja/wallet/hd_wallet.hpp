@@ -30,30 +30,34 @@ namespace wallet {
 
     class hd_wallet {
     public:
+        /**
+         * static methods
+         */
+        static std::vector<std::string> all_bip_39_words();
 
         /**
          *  constructors
          */
-        // init with coin and entropy: creates new mnemonic words from entropy.
-        hd_wallet(coinninja::wallet::base_coin coin, bc::data_chunk &entropy);
+        /// Init with coin and entropy. Creates new mnemonic words from entropy.
+        hd_wallet(coinninja::wallet::base_coin coin, bc::data_chunk const &entropy);
 
-        // init with coin and mnemonic words. For use when a user's wallet exists.
+        /// Init with coin and mnemonic words. For use when a user's wallet exists.
         hd_wallet(coinninja::wallet::base_coin coin, std::vector<std::string> mnemonic_words = {});
 
         /**
          * instance methods
          */
-        // creates new mnemonic words and returns them. Uses entropy 
-        std::vector<std::string>create_mnemonic_words(bc::data_chunk &entropy);
+        /// Creates new mnemonic words and returns them.
+        std::vector<std::string>create_mnemonic_words(bc::data_chunk const &entropy);
 
+        /// Return current 12 mnemonic words for this wallet.
         std::vector<std::string>get_current_words();
     private:
         std::vector<std::string> mnemonic_words;
         coinninja::wallet::base_coin coin;
-        coinninja::wallet::base_coin default_coin();
     };
 
 } // namespace wallet
-} // namespace coinninj
+} // namespace coinninja
 
 #endif

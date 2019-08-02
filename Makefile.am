@@ -250,6 +250,7 @@ test_libbitcoin_test_SOURCES = \
     test/chain/script.hpp \
     test/chain/transaction.cpp \
     test/coinninja/wallet/base_coin.cpp \
+    test/coinninja/wallet/hd_wallet.cpp \
     test/coinninja/wallet/mnemonic.cpp \
     test/coinninja/address/segwit_address.cpp \
     test/config/authority.cpp \

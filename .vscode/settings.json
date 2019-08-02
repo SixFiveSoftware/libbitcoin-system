@@ -5,6 +5,7 @@
         "chrono": "cpp",
         "iosfwd": "cpp",
         "vector": "cpp",
-        "ios": "cpp"
+        "ios": "cpp",
+        "array": "cpp"
     }
 }

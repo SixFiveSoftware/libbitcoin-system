@@ -23,7 +23,22 @@
 namespace coinninja {
 namespace wallet {
 
-hd_wallet::hd_wallet(coinninja::wallet::base_coin coin, bc::data_chunk &entropy)
+// static methods
+std::vector<std::string> hd_wallet::all_bip_39_words()
+{
+    bc::wallet::dictionary words = bc::wallet::language::en;
+    const int length = words.size();
+    std::vector<std::string> result(length);
+    for (size_t i{0}; i < length; ++i)
+    {
+        std::string word = std::string(words[i]);
+        result.at(i) = word;
+    }
+    return result;
+}
+
+// constructors
+hd_wallet::hd_wallet(coinninja::wallet::base_coin coin, bc::data_chunk const &entropy)
 {
     this->coin = coin;
     this->mnemonic_words = coinninja::wallet::create_mnemonic(entropy);
@@ -35,20 +50,16 @@ hd_wallet::hd_wallet(coinninja::wallet::base_coin coin, std::vector<std::string>
     this->mnemonic_words = mnemonic_words;
 }
 
-std::vector<std::string> hd_wallet::create_mnemonic_words(bc::data_chunk &entropy)
+// instance methods
+std::vector<std::string> hd_wallet::create_mnemonic_words(bc::data_chunk const &entropy)
 {
     this->mnemonic_words = coinninja::wallet::create_mnemonic(entropy);
     return this->mnemonic_words;
 }
+
 std::vector<std::string> hd_wallet::get_current_words()
 {
     return this->mnemonic_words;
-}
-
-// private
-coinninja::wallet::base_coin hd_wallet::default_coin()
-{
-    return coinninja::wallet::base_coin{};
 }
 
 } // namespace wallet
