@@ -4,6 +4,7 @@
         "algorithm": "cpp",
         "chrono": "cpp",
         "iosfwd": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "ios": "cpp"
     }
 }
