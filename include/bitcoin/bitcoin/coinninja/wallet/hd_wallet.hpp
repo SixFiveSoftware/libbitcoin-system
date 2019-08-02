@@ -55,6 +55,7 @@ namespace wallet {
     private:
         std::vector<std::string> mnemonic_words;
         coinninja::wallet::base_coin coin;
+        bc::wallet::hd_private master_private_key;
     };
 
 } // namespace wallet

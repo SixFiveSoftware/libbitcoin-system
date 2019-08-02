@@ -54,6 +54,9 @@ hd_wallet::hd_wallet(coinninja::wallet::base_coin coin, std::vector<std::string>
 std::vector<std::string> hd_wallet::create_mnemonic_words(bc::data_chunk const &entropy)
 {
     this->mnemonic_words = coinninja::wallet::create_mnemonic(entropy);
+    auto seed = to_chunk(decode_mnemonic(this->mnemonic_words)); //bc::wallet::hd_private(entropy);
+    auto net = (coin.get_coin() == MainNet) ? hd_private::mainnet : hd_private::testnet;
+    this->master_private_key = bc::wallet::hd_private(seed, net);
     return this->mnemonic_words;
 }
 
