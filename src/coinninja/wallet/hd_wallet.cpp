@@ -39,30 +39,29 @@ std::vector<std::string> hd_wallet::all_bip_39_words()
 
 // constructors
 hd_wallet::hd_wallet(coinninja::wallet::base_coin coin, bc::data_chunk const &entropy)
-{
-    this->coin = coin;
-    this->mnemonic_words = coinninja::wallet::create_mnemonic(entropy);
-}
+    : hd_wallet{coin, coinninja::wallet::create_mnemonic(entropy)} {}
 
 hd_wallet::hd_wallet(coinninja::wallet::base_coin coin, std::vector<std::string> mnemonic_words)
+    : coin{coin}, mnemonic_words{mnemonic_words}
 {
-    this->coin = coin;
-    this->mnemonic_words = mnemonic_words;
+    auto seed = to_chunk(decode_mnemonic(mnemonic_words));
+    auto net = (coin.get_coin() == MainNet) ? hd_private::mainnet : hd_private::testnet;
+    master_private_key = bc::wallet::hd_private(seed, net);
 }
 
 // instance methods
 std::vector<std::string> hd_wallet::create_mnemonic_words(bc::data_chunk const &entropy)
 {
-    this->mnemonic_words = coinninja::wallet::create_mnemonic(entropy);
-    auto seed = to_chunk(decode_mnemonic(this->mnemonic_words)); //bc::wallet::hd_private(entropy);
+    mnemonic_words = coinninja::wallet::create_mnemonic(entropy);
+    // auto seed = to_chunk(decode_mnemonic(this->mnemonic_words)); //bc::wallet::hd_private(entropy);
     auto net = (coin.get_coin() == MainNet) ? hd_private::mainnet : hd_private::testnet;
-    this->master_private_key = bc::wallet::hd_private(seed, net);
-    return this->mnemonic_words;
+    master_private_key = bc::wallet::hd_private(entropy, net);
+    return mnemonic_words;
 }
 
 std::vector<std::string> hd_wallet::get_current_words()
 {
-    return this->mnemonic_words;
+    return mnemonic_words;
 }
 
 } // namespace wallet

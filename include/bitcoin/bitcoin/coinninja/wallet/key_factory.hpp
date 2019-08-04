@@ -17,36 +17,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef COINNINJA_KEY_FACTORY_HPP
+#define COINNINJA_KEY_FACTORY_HPP
+
+#include <bitcoin/bitcoin.hpp>
 #include <bitcoin/bitcoin/coinninja/wallet/base_coin.hpp>
+#include <bitcoin/bitcoin/coinninja/wallet/derivation_path.hpp>
+#include <vector>
+#include <string>
 
 namespace coinninja {
 namespace wallet {
 
-base_coin::base_coin(coin_derivation_purpose purpose, coin_derivation_coin coin, int account)
-    : purpose{purpose}, coin{coin}, account{account} { }
-
-coin_derivation_purpose base_coin::get_purpose()
-{
-    return purpose;
-}
-
-coin_derivation_coin base_coin::get_coin()
-{
-    return coin;
-}
-
-int base_coin::get_account()
-{
-    return account;
-}
-
-std::string base_coin::get_bech32_hrp()
-{
-    if (purpose != BIP84) {
-        return "";
-    }
-    return (coin == MainNet) ? "bc" : "tb";
-}
+    class key_factory {
+        static bc::wallet::hd_private index_private_key(bc::wallet::hd_private const &master_key, coinninja::wallet::derivation_path &path);
+        static bc::wallet::hd_public index_public_key(bc::wallet::hd_private const &master_key, coinninja::wallet::derivation_path &path);
+    };
 
 } // namespace wallet
 } // namespace coinninja
+
+#endif

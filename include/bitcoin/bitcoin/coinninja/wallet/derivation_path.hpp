@@ -26,24 +26,22 @@ namespace wallet {
 
     class derivation_path {
     public:
-        derivation_path(int purpose);
-        derivation_path(int purpose, int coin, int account, int change, int index);
+        derivation_path(uint32_t purpose, uint32_t coin = 0, uint32_t account = 0, uint32_t change = 0, uint32_t index = 0);
 
-        bool has_coin();
-        int get_coin();
-        int get_change();
-        int get_index();
-        int get_hardened_purpose();
-        int get_hardened_coin();
-        int get_hardened_account();
+        uint32_t get_coin();
+        uint32_t get_change();
+        uint32_t get_index();
+        uint32_t get_hardened_purpose();
+        uint32_t get_hardened_coin();
+        uint32_t get_hardened_account();
 
     private:
         uint32_t hardened_offset{bc::wallet::hd_first_hardened_key};
-        int purpose{-1};
-        int coin{-1};
-        int account{-1};
-        int change{-1};
-        int index{-1};
+        uint32_t purpose;
+        uint32_t coin;
+        uint32_t account;
+        uint32_t change;
+        uint32_t index;
     };
 
 } // namespace wallet

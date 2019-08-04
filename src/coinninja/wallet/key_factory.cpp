@@ -17,36 +17,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <bitcoin/bitcoin/coinninja/wallet/derivation_path.hpp>
+#include <bitcoin/bitcoin/coinninja/wallet/key_factory.hpp>
 
 namespace coinninja {
 namespace wallet {
 
-derivation_path::derivation_path(uint32_t purpose, uint32_t coin, uint32_t account, uint32_t change, uint32_t index)
-    : purpose{purpose}, coin{coin}, account{account}, change{change}, index{index} { }
-
-uint32_t derivation_path::get_coin() {
-    return coin;
+/**
+ * static methods
+ */
+bc::wallet::hd_private key_factory::index_private_key(bc::wallet::hd_private const &master_key, coinninja::wallet::derivation_path &path)
+{
+    const auto purpose_key = master_key.derive_private(path.get_hardened_purpose());
+    const auto coin_key = purpose_key.derive_private(path.get_hardened_coin());
+    const auto account_key = coin_key.derive_private(path.get_hardened_account());
+    const auto change_key = account_key.derive_private(path.get_change());
+    const auto index_key = change_key.derive_private(path.get_index());
+    return index_key;
 }
 
-uint32_t derivation_path::get_change() {
-    return change;
-}
-
-uint32_t derivation_path::get_index() {
-    return index;
-}
-
-uint32_t derivation_path::get_hardened_purpose() {
-    return purpose + hardened_offset;
-}
-
-uint32_t derivation_path::get_hardened_coin() {
-    return coin + hardened_offset;
-}
-
-uint32_t derivation_path::get_hardened_account() {
-    return account + hardened_offset;
+bc::wallet::hd_public key_factory::index_public_key(bc::wallet::hd_private const &master_key, coinninja::wallet::derivation_path &path)
+{
+    return key_factory::index_private_key(master_key, path).to_public();
 }
 
 } // namespace wallet
