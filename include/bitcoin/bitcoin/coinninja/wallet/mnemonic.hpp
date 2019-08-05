@@ -26,9 +26,11 @@ using namespace bc;
 using namespace wallet;
 
 namespace coinninja {
-    namespace wallet {
-        word_list create_mnemonic(const data_slice &entropy, const dictionary &lexicon=language::en);
-    } // namespace wallet
+namespace wallet {
+
+    word_list create_mnemonic(const data_slice &entropy, const dictionary &lexicon=language::en);
+
+} // namespace wallet
 } // namespace coinninja
 
 

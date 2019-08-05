@@ -21,16 +21,18 @@
 #include <bitcoin/bitcoin/wallet/mnemonic.hpp>
 
 namespace coinninja {
-    namespace wallet {
-        word_list create_mnemonic(const data_slice &entropy, const dictionary &lexicon)
-        {
-            word_list mnemonic{bc::wallet::create_mnemonic(entropy, lexicon)};
-            if (bc::wallet::validate_mnemonic(mnemonic))
-            {
-                return mnemonic;
-            } else {
-                throw "Invalid mnemonic";
-            }
-        }
-    } // namespace wallet
+namespace wallet {
+
+word_list create_mnemonic(const data_slice &entropy, const dictionary &lexicon)
+{
+    word_list mnemonic{bc::wallet::create_mnemonic(entropy, lexicon)};
+    if (bc::wallet::validate_mnemonic(mnemonic))
+    {
+        return mnemonic;
+    } else {
+        throw "Invalid mnemonic";
+    }
+}
+
+} // namespace wallet
 } // namespace coinninja
