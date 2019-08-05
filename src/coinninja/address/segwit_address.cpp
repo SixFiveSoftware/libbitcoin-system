@@ -24,6 +24,9 @@
 #include <bitcoin/bitcoin/coinninja/address/bech32.hpp>
 #include <bitcoin/bitcoin/coinninja/address/segwit_address.hpp>
 
+#define kP2WPKHProgramSize 20
+#define kP2WSHProgramSize 32
+
 namespace
 {
 
@@ -80,6 +83,28 @@ namespace segwit_address {
         std::string ret = coinninja::address::bech32::encode(hrp, enc);
         if (decode(hrp, ret).first == -1) return "";
         return ret;
+    }
+
+    /// Determine if address is P2WPKH
+    bool is_valid_p2wpkh_address(std::string address) {
+        if (address == "") {
+            return false;
+        }
+
+        std::string hrp = address.substr(0,2);
+        auto decoded = decode(hrp, address);
+        return (decoded.first != -1) && (decoded.second.size() == kP2WPKHProgramSize);
+    }
+
+    /// Determine if address is P2WSH
+    bool is_valid_p2wsh_address(std::string address) {
+        if (address == "") {
+            return false;
+        }
+
+        std::string hrp = address.substr(0,2);
+        auto decoded = decode(hrp, address);
+        return (decoded.first != -1) && (decoded.second.size() == kP2WSHProgramSize);
     }
 
 } // namespace segwit_address

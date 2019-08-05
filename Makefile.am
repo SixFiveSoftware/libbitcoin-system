@@ -56,6 +56,8 @@ src_libbitcoin_la_SOURCES = \
     src/coinninja/wallet/hd_wallet.cpp \
     src/coinninja/wallet/key_factory.cpp \
     src/coinninja/wallet/mnemonic.cpp \
+    src/coinninja/address/address_helper.hpp \
+    src/coinninja/address/address_helper.cpp \
     src/coinninja/address/bech32.cpp \
     src/coinninja/address/meta_address.cpp \
     src/coinninja/address/segwit_address.cpp \

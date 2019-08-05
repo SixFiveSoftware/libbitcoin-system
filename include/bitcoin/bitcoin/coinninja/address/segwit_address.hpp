@@ -35,6 +35,12 @@ namespace segwit_address {
     /** Encode a SegWit address. Empty string means failure. */
     std::string encode(const std::string& hrp, int witver, const std::vector<uint8_t>& witprog);
 
+    /// Determine if address is P2WPKH
+    bool is_valid_p2wpkh_address(std::string address);
+
+    /// Determine if address is P2WSH
+    bool is_valid_p2wsh_address(std::string address);
+
 } // namespace segwit_address
 } // namespace address
 } // namespace coinninja
