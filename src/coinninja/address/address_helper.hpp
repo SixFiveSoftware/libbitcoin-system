@@ -22,6 +22,7 @@
 
 #include <string>
 #include <bitcoin/bitcoin/coinninja/wallet/base_coin.hpp>
+#include <bitcoin/bitcoin.hpp>
 
 namespace coinninja {
 namespace address {
@@ -63,7 +64,7 @@ private:
     bool address_version_is_p2sh(uint8_t version);
     bool address_is_p2wpkh(std::string);
     bool address_is_p2wsh(std::string);
-    payment_output_type address_type_for(bc::wallet::payment_address);
+    coinninja::address::payment_output_type address_type_for_payment_address(bc::wallet::payment_address);
     uint8_t bytes_per_output_address(std::string address);
 };
 

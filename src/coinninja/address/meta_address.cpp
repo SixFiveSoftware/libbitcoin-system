@@ -35,7 +35,7 @@ coinninja::wallet::derivation_path meta_address::get_derivation_path()
     return path;
 }
 
-std::string meta_address::uncompressed_public_key()
+std::string meta_address::get_uncompressed_public_key()
 {
     return uncompressed_public_key;
 }

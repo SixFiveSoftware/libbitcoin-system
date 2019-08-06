@@ -257,6 +257,7 @@ test_libbitcoin_test_SOURCES = \
     test/coinninja/wallet/hd_wallet.cpp \
     test/coinninja/wallet/mnemonic.cpp \
     test/coinninja/address/segwit_address.cpp \
+    test/coinninja/address/address_helper.cpp \
     test/config/authority.cpp \
     test/config/base58.cpp \
     test/config/checkpoint.cpp \

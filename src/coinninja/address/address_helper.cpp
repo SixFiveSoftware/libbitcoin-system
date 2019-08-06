@@ -44,7 +44,7 @@ coinninja::address::payment_output_type address_helper::address_type_for_address
         return P2WSH;
     } else {
         bc::wallet::payment_address payment_address{address};
-        return address_type_for(payment_address);
+        return address_type_for_payment_address(payment_address);
     }
 }
 
@@ -75,7 +75,7 @@ uint16_t address_helper::bytes_per_change_output()
 uint16_t address_helper::total_bytes(uint8_t number_of_inputs, std::string address, bool include_change_address)
 {
     auto input_size = bytes_per_input();
-    auto change_size = (include_change_address ? kP2SHOutputSize : 0);
+    auto change_size = (include_change_address ? bytes_per_change_output() : 0);
     auto output_size = bytes_per_output_address(address);
     auto base_size = kBaseTxBytes;
     return (input_size * number_of_inputs) + output_size + change_size + base_size;
@@ -104,11 +104,11 @@ bool address_helper::address_is_p2wsh(std::string address)
     return coinninja::address::segwit_address::is_valid_p2wsh_address(address);
 }
 
-coinninja::address::payment_output_type address_helper::address_type_for(bc::wallet::payment_address address)
+coinninja::address::payment_output_type address_helper::address_type_for_payment_address(bc::wallet::payment_address address)
 {
-    if (address_version_is_p2kh(address.version)) {
+    if (address_version_is_p2kh(address.version())) {
         return P2PKH;
-    } else if (address_version_is_p2sh(address.version)) {
+    } else if (address_version_is_p2sh(address.version())) {
         return P2SH;
     } else {
         return P2PKH;
@@ -121,7 +121,7 @@ uint8_t address_helper::bytes_per_output_address(std::string address)
         return kP2WPKHOutputSize;
     } else {
         bc::wallet::payment_address payment_address{address};
-        uint8_t version = payment_address.version;
+        uint8_t version = payment_address.version();
         if (address_version_is_p2kh(version)) {
             return kP2KHOutputSize;
         } else if (address_version_is_p2sh(version)) {
