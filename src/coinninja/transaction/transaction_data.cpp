@@ -85,7 +85,7 @@ bool transaction_data::create_transaction_data(coinninja::transaction::transacti
             required_inputs.push_back(output);
             number_of_inputs++;
             total_from_utxos += output.amount;
-            bool include_change_output = (return_data.change_path == nullptr);
+            bool include_change_output = (return_data.change_path != nullptr);
             uint16_t total_bytes{byte_estimate_for(number_of_inputs, payment_address, include_change_output, coin)};
             current_fee = fee_rate * total_bytes;
             total_sending_value = amount + current_fee;
