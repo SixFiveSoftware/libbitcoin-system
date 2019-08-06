@@ -84,7 +84,7 @@ public:
      * @param block_height The current block height, used to calculate the locktime (blockHeight + 1).
      * @return True with a populated reference as the first parameter if the object is able to satisfy amount+fee with UTXOs, or false if insufficient funds
      */
-    static bool create_transaction_data(coinninja::transaction::transaction_data &data,
+    static bool create_flat_fee_transaction_data(coinninja::transaction::transaction_data &data,
         std::string payment_address,
         coinninja::wallet::base_coin coin,
         std::vector<coinninja::transaction::unspent_transaction_output>all_unspent_transaction_outputs,
@@ -94,6 +94,27 @@ public:
         uint64_t block_height
     );
 
+    /**
+     * Create transaction data object by sending max to destinationa address.
+     * 
+     * @param all_unspent_transaction_outputs An array of all available UTXOs, which will be selected by this method.
+     * @param coin The coin representing the current user's wallet.
+     * @param paymentAddress The address to which you want to send currency.
+     * @param fee_rate The fee rate to be multiplied by transaction size
+     * @param block_height The current block height, used to calculate the locktime (blockHeight + 1).
+     * @return True with a populated reference as the first parameter if the object is able to satisfy amount+fee with UTXOs, or false if insufficient funds
+     */
+    static bool create_send_maxtransaction_data(coinninja::transaction::transaction_data &data,
+        std::vector<coinninja::transaction::unspent_transaction_output> all_unspent_transaction_outputs,
+        coinninja::wallet::base_coin coin,
+        std::string payment_address,
+        uint16_t fee_rate,
+        uint64_t block_height
+    );
+
+    /**
+     * Members
+     */
     std::string payment_address{};
     std::vector<coinninja::transaction::unspent_transaction_output> unspent_transaction_outputs{};
     uint64_t amount{};
@@ -102,6 +123,9 @@ public:
     coinninja::wallet::derivation_path *change_path{nullptr};
     uint64_t locktime{};
 
+    /**
+     * Member methods
+     */
     bool get_should_be_rbf();
     bool should_add_change_to_transaction();
 
