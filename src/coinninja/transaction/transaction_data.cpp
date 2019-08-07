@@ -225,6 +225,16 @@ bool transaction_data::create_send_max_transaction_data(coinninja::transaction::
     return true;
 }
     
+bool transaction_data::get_should_be_rbf()
+{
+    return should_be_rbf;
+}
+
+bool transaction_data::should_add_change_to_transaction()
+{
+    return (change_amount > 0) && (change_path != nullptr);
+}
+
 uint16_t transaction_data::dust_threshold()
 {
     return 1000;
