@@ -171,7 +171,6 @@ bool transaction_data::create_flat_fee_transaction_data(coinninja::transaction::
         if (total_from_utxos >= amount && temp_change_amount > 0 && return_data.change_path == nullptr)
         {
             return_data.change_path = change_path;
-            // return_data.change_amount = MAX(0, (total_from_utxos - static_cast<int>(amount) - static_cast<int>(flat_fee)));
 
             if (return_data.change_amount < dust_threshold())
             {
@@ -187,7 +186,7 @@ bool transaction_data::create_flat_fee_transaction_data(coinninja::transaction::
     return true;
 }
 
-bool transaction_data::create_send_maxtransaction_data(coinninja::transaction::transaction_data &data,
+bool transaction_data::create_send_max_transaction_data(coinninja::transaction::transaction_data &data,
     std::vector<coinninja::transaction::unspent_transaction_output> all_unspent_transaction_outputs,
     coinninja::wallet::base_coin coin,
     std::string payment_address,

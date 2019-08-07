@@ -104,7 +104,7 @@ public:
      * @param block_height The current block height, used to calculate the locktime (blockHeight + 1).
      * @return True with a populated reference as the first parameter if the object is able to satisfy amount+fee with UTXOs, or false if insufficient funds
      */
-    static bool create_send_maxtransaction_data(coinninja::transaction::transaction_data &data,
+    static bool create_send_max_transaction_data(coinninja::transaction::transaction_data &data,
         std::vector<coinninja::transaction::unspent_transaction_output> all_unspent_transaction_outputs,
         coinninja::wallet::base_coin coin,
         std::string payment_address,

@@ -188,6 +188,42 @@ BOOST_AUTO_TEST_CASE(single_output__double_input__insufficient_funds__returns_fa
     BOOST_REQUIRE(!success);
 }
 
+BOOST_AUTO_TEST_CASE(native_segwit_output__p2sh_segwit_input__returns_true)
+{
+    // given
+    uint64_t payment_amount{50000000}; // 0.50000000 BTC
+    uint64_t utxo_amount_1{30000000};    // 0.30000000 BTC
+    uint64_t utxo_amount_2{30000000};    // 0.30000000 BTC
+    std::string segwit_address{"bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4"};
+    derivation_path change_path{coin_derivation_purpose::BIP49, coin_derivation_coin::MainNet, 0, 1, 0};
+    derivation_path utxo_path{coin_derivation_purpose::BIP49};
+    unspent_transaction_output utxo1{"previous txid", 0, utxo_amount_1, utxo_path, true};
+    unspent_transaction_output utxo2{"previous txid", 1, utxo_amount_2, utxo_path, true};
+    std::vector<unspent_transaction_output> utxos{utxo1, utxo2};
+    uint16_t fee_rate{30};
+    uint16_t total_bytes = helper.total_bytes(utxos.size(), segwit_address, true);
+    auto expected_fee_amount{fee_rate * total_bytes};  // 7,680
+    auto expected_change_amount{9992320}; // 0.6BTC - 0.5BTC - 0.00007680BTC fee
+    auto expected_number_of_utxos{2};
+    auto expected_locktime{500000};
+
+    // when
+    transaction_data tx_data;
+    bool success = transaction_data::create_transaction_data(
+        tx_data, segwit_address, coin, utxos, payment_amount, fee_rate, &change_path, 500000
+    );
+
+    // then
+    BOOST_REQUIRE(success);
+    BOOST_REQUIRE_EQUAL(total_bytes, 256);
+    BOOST_REQUIRE_EQUAL(expected_fee_amount, 7680);
+    BOOST_REQUIRE_EQUAL(tx_data.amount, payment_amount);
+    BOOST_REQUIRE_EQUAL(tx_data.fee_amount, expected_fee_amount);
+    BOOST_REQUIRE_EQUAL(tx_data.change_amount, expected_change_amount);
+    BOOST_REQUIRE_EQUAL(tx_data.unspent_transaction_outputs.size(), expected_number_of_utxos);
+    BOOST_REQUIRE_EQUAL(tx_data.locktime, expected_locktime);
+}
+
 BOOST_AUTO_TEST_CASE(cost_of_change__is_beneficial)
 {
     // given
@@ -263,6 +299,137 @@ BOOST_AUTO_TEST_CASE(tx_data__with_flat_fee__calculates_utxos_and_change)
     BOOST_REQUIRE_EQUAL(tx_data.fee_amount, flat_fee_amount);
     BOOST_REQUIRE_EQUAL(tx_data.change_amount, expected_change);
     BOOST_REQUIRE_EQUAL(tx_data.change_path, &change_path);
+}
+
+BOOST_AUTO_TEST_CASE(dusty_transaction_data__with_flat_fee__calculates_utxos_and_no_change)
+{
+    // given
+    derivation_path path1{coin_derivation_purpose::BIP49, coin_derivation_coin::MainNet, 0, 1, 3};
+    derivation_path path2{coin_derivation_purpose::BIP49, coin_derivation_coin::MainNet, 0, 0, 2};
+    unspent_transaction_output utxo1{"909ac6e0a31c68fe345cc72d568bbab75afb5229b648753c486518f11c0d0009", 1, 20000, path1, true};
+    unspent_transaction_output utxo2{"419a7a7d27e0c4341ca868d0b9744ae7babb18fd691e39be608b556961c00ade", 0, 10100, path2, true};
+    std::vector<unspent_transaction_output> utxos{utxo1, utxo2};
+    derivation_path change_path{coin_derivation_purpose::BIP49, coin_derivation_coin::MainNet, 0, 1, 5};
+    auto payment_amount{20000};
+    auto expected_fee_amount{10000};
+
+    // when
+    transaction_data tx_data;
+    bool success = transaction_data::create_flat_fee_transaction_data(
+        tx_data, test_address, coin, utxos, payment_amount, expected_fee_amount, &change_path, 500000
+    );
+
+    // then
+    BOOST_REQUIRE(success);
+    BOOST_REQUIRE_EQUAL(tx_data.amount, payment_amount);
+    BOOST_REQUIRE_EQUAL(tx_data.fee_amount, expected_fee_amount);
+    BOOST_REQUIRE_EQUAL(tx_data.change_amount, 0);
+    BOOST_REQUIRE_EQUAL(tx_data.change_path, nullptr);
+}
+
+/// send max tests
+BOOST_AUTO_TEST_CASE(send_max__uses_all_utxos__amount_is_total_value_minus_fee)
+{
+    // given
+    auto fee_rate{5};
+    derivation_path path1{coin_derivation_purpose::BIP49, coin_derivation_coin::MainNet, 0, 1, 3};
+    derivation_path path2{coin_derivation_purpose::BIP49, coin_derivation_coin::MainNet, 0, 0, 2};
+    unspent_transaction_output utxo1{"909ac6e0a31c68fe345cc72d568bbab75afb5229b648753c486518f11c0d0009", 1, 20000, path1, true};
+    unspent_transaction_output utxo2{"419a7a7d27e0c4341ca868d0b9744ae7babb18fd691e39be608b556961c00ade", 0, 10000, path2, true};
+    std::vector<unspent_transaction_output> utxos{utxo1, utxo2};
+    auto input_amount{utxo1.amount + utxo2.amount};
+    auto total_bytes{helper.total_bytes(utxos.size(), test_address, false)};
+    auto expected_fee_amount{fee_rate * total_bytes}; // 1,125
+    auto expected_amount{input_amount - expected_fee_amount};
+
+    // when
+    transaction_data tx_data;
+    bool success = transaction_data::create_send_max_transaction_data(
+        tx_data, utxos, coin, test_address, fee_rate, 500000
+    );
+
+    // then
+    BOOST_REQUIRE(success);
+    BOOST_REQUIRE_EQUAL(tx_data.amount, expected_amount);
+    BOOST_REQUIRE_EQUAL(tx_data.fee_amount, expected_fee_amount);
+    BOOST_REQUIRE_EQUAL(tx_data.change_amount, 0);
+    BOOST_REQUIRE_EQUAL(tx_data.change_path, nullptr);
+}
+
+BOOST_AUTO_TEST_CASE(send_max__with_insufficient_funds__returns_false)
+{
+    // given
+    auto fee_rate{5};
+    derivation_path path1{coin_derivation_purpose::BIP49, coin_derivation_coin::MainNet, 0, 1, 3};
+    unspent_transaction_output utxo1{"909ac6e0a31c68fe345cc72d568bbab75afb5229b648753c486518f11c0d0009", 1, 100, path1, true};
+    std::vector<unspent_transaction_output> utxos{utxo1};
+
+    // when
+    transaction_data tx_data;
+    bool success = transaction_data::create_send_max_transaction_data(
+        tx_data, utxos, coin, test_address, fee_rate, 500000
+    );
+
+    // then
+    BOOST_REQUIRE(!success);
+}
+
+BOOST_AUTO_TEST_CASE(send_max__with_just_enough_funds__returns_true)
+{
+    // given
+    auto fee_rate{5};
+    derivation_path path1{coin_derivation_purpose::BIP49, coin_derivation_coin::MainNet, 0, 1, 3};
+    unspent_transaction_output utxo1{"909ac6e0a31c68fe345cc72d568bbab75afb5229b648753c486518f11c0d0009", 1, 670, path1, true};
+    std::vector<unspent_transaction_output> utxos{utxo1};
+    auto input_amount{utxo1.amount};
+    auto total_bytes{helper.total_bytes(utxos.size(), test_address, false)};
+    auto expected_fee_amount{fee_rate * total_bytes}; // 670
+    auto expected_amount{input_amount - expected_fee_amount}; // 0
+
+    // when
+    transaction_data tx_data;
+    bool success = transaction_data::create_send_max_transaction_data(
+        tx_data, utxos, coin, test_address, fee_rate, 500000
+    );
+
+    // then
+    BOOST_REQUIRE(success);
+    BOOST_REQUIRE_EQUAL(tx_data.amount, expected_amount);
+    BOOST_REQUIRE_EQUAL(tx_data.amount, 0);
+    BOOST_REQUIRE_EQUAL(tx_data.fee_amount, expected_fee_amount);
+    BOOST_REQUIRE_EQUAL(tx_data.fee_amount, 670);
+    BOOST_REQUIRE_EQUAL(tx_data.change_amount, 0);
+    BOOST_REQUIRE_EQUAL(tx_data.change_path, nullptr);
+}
+
+BOOST_AUTO_TEST_CASE(send_max__to_native_segwit_output__returns_true)
+{
+    // given
+    auto fee_rate{5};
+    derivation_path path1{coin_derivation_purpose::BIP49, coin_derivation_coin::MainNet, 0, 1, 3};
+    derivation_path path2{coin_derivation_purpose::BIP49, coin_derivation_coin::MainNet, 0, 0, 2};
+    unspent_transaction_output utxo1{"909ac6e0a31c68fe345cc72d568bbab75afb5229b648753c486518f11c0d0009", 1, 20000, path1, true};
+    unspent_transaction_output utxo2{"419a7a7d27e0c4341ca868d0b9744ae7babb18fd691e39be608b556961c00ade", 0, 10000, path2, true};
+    std::vector<unspent_transaction_output> utxos{utxo1, utxo2};
+    std::string segwit_address{"bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4"};
+    auto input_amount{utxo1.amount + utxo2.amount};
+    auto total_bytes{helper.total_bytes(utxos.size(), segwit_address, false)};  // 224
+    auto expected_fee_amount{fee_rate * total_bytes}; // 1,120
+    auto expected_amount{input_amount - expected_fee_amount};
+
+    // when
+    transaction_data tx_data;
+    bool success = transaction_data::create_send_max_transaction_data(
+        tx_data, utxos, coin, segwit_address, fee_rate, 500000
+    );
+
+    // then
+    BOOST_REQUIRE(success);
+    BOOST_REQUIRE_EQUAL(total_bytes, 224);
+    BOOST_REQUIRE_EQUAL(tx_data.amount, expected_amount);
+    BOOST_REQUIRE_EQUAL(tx_data.fee_amount, expected_fee_amount);
+    BOOST_REQUIRE_EQUAL(tx_data.change_amount, 0);
+    BOOST_REQUIRE_EQUAL(tx_data.change_path, nullptr);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
