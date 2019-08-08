@@ -29,10 +29,10 @@
 namespace coinninja {
 namespace wallet {
 
-    class key_factory {
-        static bc::wallet::hd_private index_private_key(bc::wallet::hd_private const &master_key, coinninja::wallet::derivation_path &path);
-        static bc::wallet::hd_public index_public_key(bc::wallet::hd_private const &master_key, coinninja::wallet::derivation_path &path);
-    };
+struct key_factory {
+    static bc::wallet::hd_private index_private_key(bc::wallet::hd_private const &master_key, coinninja::wallet::derivation_path &path);
+    static bc::wallet::hd_public index_public_key(bc::wallet::hd_private const &master_key, coinninja::wallet::derivation_path &path);
+};
 
 } // namespace wallet
 } // namespace coinninja
