@@ -62,7 +62,9 @@ src_libbitcoin_la_SOURCES = \
     src/coinninja/address/meta_address.cpp \
     src/coinninja/address/segwit_address.cpp \
     src/coinninja/transaction/transaction_data.cpp \
+    src/coinninja/transaction/transaction_metadata.cpp \
     src/coinninja/transaction/unspent_transaction_output.cpp \
+    src/coinninja/transaction/usable_address.cpp \
     src/config/authority.cpp \
     src/config/base16.cpp \
     src/config/base2.cpp \
@@ -257,6 +259,7 @@ test_libbitcoin_test_SOURCES = \
     test/chain/transaction.cpp \
     test/coinninja/wallet/base_coin.cpp \
     test/coinninja/wallet/hd_wallet.cpp \
+    test/coinninja/wallet/key_factory.cpp \
     test/coinninja/wallet/mnemonic.cpp \
     test/coinninja/address/segwit_address.cpp \
     test/coinninja/address/address_helper.cpp \
@@ -403,7 +406,9 @@ include_bitcoin_bitcoin_coinninja_address_HEADERS = \
 include_bitcoin_bitcoin_coinninja_transactiondir = ${includedir}/bitcoin/bitcoin/coinninja/transaction
 include_bitcoin_bitcoin_coinninja_transaction_HEADERS = \
     include/bitcoin/bitcoin/coinninja/transaction/transaction_data.hpp \
-    include/bitcoin/bitcoin/coinninja/transaction/unspent_transaction_output.hpp
+    include/bitcoin/bitcoin/coinninja/transaction/transaction_metadata.hpp \
+    include/bitcoin/bitcoin/coinninja/transaction/unspent_transaction_output.hpp \
+    include/bitcoin/bitcoin/coinninja/transaction/usable_address.hpp
 
 include_bitcoin_bitcoin_configdir = ${includedir}/bitcoin/bitcoin/config
 include_bitcoin_bitcoin_config_HEADERS = \
