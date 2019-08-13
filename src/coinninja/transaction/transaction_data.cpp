@@ -37,7 +37,7 @@ transaction_data::transaction_data(std::string payment_address,
     uint64_t amount,
     uint64_t fee_amount,
     uint64_t change_amount,
-    coinninja::wallet::derivation_path *change_path,
+    coinninja::wallet::derivation_path change_path,
     uint64_t block_height,
     bool should_be_rbf
 )
@@ -58,12 +58,12 @@ bool transaction_data::create_transaction_data(coinninja::transaction::transacti
     std::vector<coinninja::transaction::unspent_transaction_output> all_unspent_transaction_outputs,
     uint64_t amount,
     uint16_t fee_rate,
-    coinninja::wallet::derivation_path *change_path,
+    coinninja::wallet::derivation_path change_path,
     uint64_t block_height
 )
 {
     coinninja::transaction::transaction_data return_data{
-        payment_address, coin, {}, amount, 0, 0, nullptr, block_height
+        payment_address, coin, {}, amount, 0, 0, change_path, block_height
     };
 
     coinninja::address::address_helper helper{coin};
@@ -84,13 +84,12 @@ bool transaction_data::create_transaction_data(coinninja::transaction::transacti
             required_inputs.push_back(output);
             number_of_inputs++;
             total_from_utxos += output.amount;
-            bool include_change_output = (return_data.change_path != nullptr);
-            uint16_t total_bytes{byte_estimate_for(number_of_inputs, payment_address, include_change_output, coin)};
+            uint16_t total_bytes{byte_estimate_for(number_of_inputs, payment_address, false, coin)};
             current_fee = fee_rate * total_bytes;
             total_sending_value = amount + current_fee;
 
             int change_value = total_from_utxos - total_sending_value;
-            if ((total_from_utxos < amount + current_fee) || change_value < 0)
+            if ((total_from_utxos < total_sending_value) || change_value < 0)
             {
                 continue;
             }
@@ -104,9 +103,8 @@ bool transaction_data::create_transaction_data(coinninja::transaction::transacti
             {
                 total_bytes = byte_estimate_for(number_of_inputs, payment_address, true, coin);
                 current_fee = fee_rate * total_bytes;
-                change_value -= (fee_rate * helper.bytes_per_change_output());
+                change_value = total_from_utxos - amount - current_fee;
                 return_data.change_amount = change_value;
-                return_data.change_path = change_path;
                 break;
             }
         } else
@@ -134,12 +132,12 @@ bool transaction_data::create_flat_fee_transaction_data(coinninja::transaction::
     std::vector<coinninja::transaction::unspent_transaction_output>all_unspent_transaction_outputs,
     uint64_t amount,
     uint64_t flat_fee,
-    coinninja::wallet::derivation_path *change_path,
+    coinninja::wallet::derivation_path change_path,
     uint64_t block_height
 )
 {
     coinninja::transaction::transaction_data return_data{
-        payment_address, coin, {}, amount, flat_fee, 0, nullptr, block_height, true
+        payment_address, coin, {}, amount, flat_fee, 0, change_path, block_height, true
     };
 
     std::vector<coinninja::transaction::unspent_transaction_output> all_utxos_copy{all_unspent_transaction_outputs};
@@ -167,14 +165,13 @@ bool transaction_data::create_flat_fee_transaction_data(coinninja::transaction::
         int temp_change_amount = MAX(0, possible_change);
         return_data.change_amount = static_cast<uint64_t>(temp_change_amount);
 
-        if (total_from_utxos >= amount && temp_change_amount > 0 && return_data.change_path == nullptr)
+        if (total_from_utxos >= amount && temp_change_amount > 0)
         {
             return_data.change_path = change_path;
 
             if (return_data.change_amount < dust_threshold())
             {
                 return_data.change_amount = 0;
-                return_data.change_path = nullptr;
             }
         }
 
@@ -193,8 +190,9 @@ bool transaction_data::create_send_max_transaction_data(coinninja::transaction::
     uint64_t block_height
 )
 {
+    coinninja::wallet::derivation_path dummy_change{}; // just used to satisfy parameter; not used as there is no change when sending max.
     coinninja::transaction::transaction_data return_data{
-        payment_address, coin, {}, 0, 0, 0, nullptr, block_height
+        payment_address, coin, {}, 0, 0, 0, dummy_change, block_height
     };
 
     coinninja::address::address_helper helper{coin};
@@ -231,7 +229,7 @@ bool transaction_data::get_should_be_rbf()
 
 bool transaction_data::should_add_change_to_transaction()
 {
-    return (change_amount > 0) && (change_path != nullptr);
+    return (change_amount > 0);
 }
 
 uint16_t transaction_data::dust_threshold()

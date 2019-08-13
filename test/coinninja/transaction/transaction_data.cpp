@@ -55,16 +55,19 @@ BOOST_AUTO_TEST_CASE(single_output__single_input__satisfies_amount)
     // when
     transaction_data tx_data;
     bool success = transaction_data::create_transaction_data(
-        tx_data, test_address, coin, outputs, payment_amount, fee_rate, &change_path, 500000
+        tx_data, test_address, coin, outputs, payment_amount, fee_rate, change_path, 500000
     );
 
     // then
     BOOST_REQUIRE(success);
     BOOST_REQUIRE_EQUAL(tx_data.amount, payment_amount);
     BOOST_REQUIRE_EQUAL(tx_data.fee_amount, expected_fee_amount);
+    BOOST_REQUIRE_EQUAL(expected_fee_amount, 4980);
+    BOOST_REQUIRE_EQUAL(expected_change_amount, 49995020);
     BOOST_REQUIRE_EQUAL(tx_data.change_amount, expected_change_amount);
     BOOST_REQUIRE_EQUAL(tx_data.unspent_transaction_outputs.size(), expected_number_of_utxos);
     BOOST_REQUIRE_EQUAL(tx_data.locktime, expected_locktime);
+    BOOST_REQUIRE_EQUAL(tx_data.should_add_change_to_transaction(), true);
 }
 
 BOOST_AUTO_TEST_CASE(single_output__double_input__and_change__satisfies_amount)
@@ -89,7 +92,7 @@ BOOST_AUTO_TEST_CASE(single_output__double_input__and_change__satisfies_amount)
     // when
     transaction_data tx_data;
     bool success = transaction_data::create_transaction_data(
-        tx_data, test_address, coin, utxos, payment_amount, fee_rate, &change_path, 500000
+        tx_data, test_address, coin, utxos, payment_amount, fee_rate, change_path, 500000
     );
 
     // then
@@ -99,6 +102,7 @@ BOOST_AUTO_TEST_CASE(single_output__double_input__and_change__satisfies_amount)
     BOOST_REQUIRE_EQUAL(tx_data.change_amount, expected_change_amount);
     BOOST_REQUIRE_EQUAL(tx_data.unspent_transaction_outputs.size(), expected_number_of_utxos);
     BOOST_REQUIRE_EQUAL(tx_data.locktime, expected_locktime);
+    BOOST_REQUIRE_EQUAL(tx_data.should_add_change_to_transaction(), true);
 }
 
 BOOST_AUTO_TEST_CASE(single_output__single_input__no_change__satisfies_amount)
@@ -120,7 +124,7 @@ BOOST_AUTO_TEST_CASE(single_output__single_input__no_change__satisfies_amount)
     // when
     transaction_data tx_data;
     bool success = transaction_data::create_transaction_data(
-        tx_data, test_address, coin, utxos, payment_amount, fee_rate, &change_path, 500000
+        tx_data, test_address, coin, utxos, payment_amount, fee_rate, change_path, 500000
     );
 
     // then
@@ -130,6 +134,7 @@ BOOST_AUTO_TEST_CASE(single_output__single_input__no_change__satisfies_amount)
     BOOST_REQUIRE_EQUAL(tx_data.change_amount, expected_change_amount);
     BOOST_REQUIRE_EQUAL(tx_data.unspent_transaction_outputs.size(), expected_number_of_utxos);
     BOOST_REQUIRE_EQUAL(tx_data.locktime, expected_locktime);
+    BOOST_REQUIRE_EQUAL(tx_data.should_add_change_to_transaction(), false);
 }
 
 BOOST_AUTO_TEST_CASE(single_output__double_input__no_change__satisfies_amount)
@@ -153,7 +158,7 @@ BOOST_AUTO_TEST_CASE(single_output__double_input__no_change__satisfies_amount)
     // when
     transaction_data tx_data;
     bool success = transaction_data::create_transaction_data(
-        tx_data, test_address, coin, utxos, payment_amount, fee_rate, &change_path, 500000
+        tx_data, test_address, coin, utxos, payment_amount, fee_rate, change_path, 500000
     );
 
     // then
@@ -163,6 +168,7 @@ BOOST_AUTO_TEST_CASE(single_output__double_input__no_change__satisfies_amount)
     BOOST_REQUIRE_EQUAL(tx_data.change_amount, expected_change_amount);
     BOOST_REQUIRE_EQUAL(tx_data.unspent_transaction_outputs.size(), expected_number_of_utxos);
     BOOST_REQUIRE_EQUAL(tx_data.locktime, expected_locktime);
+    BOOST_REQUIRE_EQUAL(tx_data.should_add_change_to_transaction(), false);
 }
 
 BOOST_AUTO_TEST_CASE(single_output__double_input__insufficient_funds__returns_false)
@@ -181,7 +187,7 @@ BOOST_AUTO_TEST_CASE(single_output__double_input__insufficient_funds__returns_fa
     // when
     transaction_data tx_data;
     bool success = transaction_data::create_transaction_data(
-        tx_data, test_address, coin, utxos, payment_amount, fee_rate, &change_path, 500000
+        tx_data, test_address, coin, utxos, payment_amount, fee_rate, change_path, 500000
     );
 
     // then
@@ -210,7 +216,7 @@ BOOST_AUTO_TEST_CASE(native_segwit_output__p2sh_segwit_input__returns_true)
     // when
     transaction_data tx_data;
     bool success = transaction_data::create_transaction_data(
-        tx_data, segwit_address, coin, utxos, payment_amount, fee_rate, &change_path, 500000
+        tx_data, segwit_address, coin, utxos, payment_amount, fee_rate, change_path, 500000
     );
 
     // then
@@ -222,6 +228,7 @@ BOOST_AUTO_TEST_CASE(native_segwit_output__p2sh_segwit_input__returns_true)
     BOOST_REQUIRE_EQUAL(tx_data.change_amount, expected_change_amount);
     BOOST_REQUIRE_EQUAL(tx_data.unspent_transaction_outputs.size(), expected_number_of_utxos);
     BOOST_REQUIRE_EQUAL(tx_data.locktime, expected_locktime);
+    BOOST_REQUIRE_EQUAL(tx_data.should_add_change_to_transaction(), true);
 }
 
 BOOST_AUTO_TEST_CASE(cost_of_change__is_beneficial)
@@ -242,7 +249,7 @@ BOOST_AUTO_TEST_CASE(cost_of_change__is_beneficial)
     // when
     transaction_data tx_data;
     bool success1 = transaction_data::create_transaction_data(
-        tx_data, test_address, coin, utxos, payment_amount, fee_rate, &change_path, 500000
+        tx_data, test_address, coin, utxos, payment_amount, fee_rate, change_path, 500000
     );
 
     // then
@@ -251,7 +258,7 @@ BOOST_AUTO_TEST_CASE(cost_of_change__is_beneficial)
     BOOST_REQUIRE_EQUAL(tx_data.fee_amount, expected_fee_amount);
     BOOST_REQUIRE_EQUAL(tx_data.unspent_transaction_outputs.size(), utxos.size());
     BOOST_REQUIRE_EQUAL(tx_data.change_amount, 0);
-    BOOST_REQUIRE_EQUAL(tx_data.change_path, nullptr);
+    BOOST_REQUIRE_EQUAL(tx_data.should_add_change_to_transaction(), false);
 
     // when again
     payment_amount = 194000;
@@ -259,7 +266,7 @@ BOOST_AUTO_TEST_CASE(cost_of_change__is_beneficial)
     auto expected_change = 3430;
     transaction_data good_tx_data;
     bool success2 = transaction_data::create_transaction_data(
-        good_tx_data, test_address, coin, utxos, payment_amount, fee_rate, &change_path, 500000
+        good_tx_data, test_address, coin, utxos, payment_amount, fee_rate, change_path, 500000
     );
 
     // then again
@@ -268,7 +275,7 @@ BOOST_AUTO_TEST_CASE(cost_of_change__is_beneficial)
     BOOST_REQUIRE_EQUAL(good_tx_data.fee_amount, expected_fee_amount);
     BOOST_REQUIRE_EQUAL(good_tx_data.unspent_transaction_outputs.size(), utxos.size());
     BOOST_REQUIRE_EQUAL(good_tx_data.change_amount, expected_change);
-    BOOST_REQUIRE_EQUAL(good_tx_data.change_path, &change_path);
+    BOOST_REQUIRE_EQUAL(good_tx_data.should_add_change_to_transaction(), true);
 }
 
 /// flat fee tests
@@ -290,7 +297,7 @@ BOOST_AUTO_TEST_CASE(tx_data__with_flat_fee__calculates_utxos_and_change)
     // when
     transaction_data tx_data;
     bool success = transaction_data::create_flat_fee_transaction_data(
-        tx_data, test_address, coin, utxos, payment_amount, flat_fee_amount, &change_path, 500000
+        tx_data, test_address, coin, utxos, payment_amount, flat_fee_amount, change_path, 500000
     );
 
     // then
@@ -298,7 +305,7 @@ BOOST_AUTO_TEST_CASE(tx_data__with_flat_fee__calculates_utxos_and_change)
     BOOST_REQUIRE_EQUAL(tx_data.amount, payment_amount);
     BOOST_REQUIRE_EQUAL(tx_data.fee_amount, flat_fee_amount);
     BOOST_REQUIRE_EQUAL(tx_data.change_amount, expected_change);
-    BOOST_REQUIRE_EQUAL(tx_data.change_path, &change_path);
+    BOOST_REQUIRE_EQUAL(tx_data.should_add_change_to_transaction(), true);
 }
 
 BOOST_AUTO_TEST_CASE(dusty_transaction_data__with_flat_fee__calculates_utxos_and_no_change)
@@ -316,7 +323,7 @@ BOOST_AUTO_TEST_CASE(dusty_transaction_data__with_flat_fee__calculates_utxos_and
     // when
     transaction_data tx_data;
     bool success = transaction_data::create_flat_fee_transaction_data(
-        tx_data, test_address, coin, utxos, payment_amount, expected_fee_amount, &change_path, 500000
+        tx_data, test_address, coin, utxos, payment_amount, expected_fee_amount, change_path, 500000
     );
 
     // then
@@ -324,7 +331,7 @@ BOOST_AUTO_TEST_CASE(dusty_transaction_data__with_flat_fee__calculates_utxos_and
     BOOST_REQUIRE_EQUAL(tx_data.amount, payment_amount);
     BOOST_REQUIRE_EQUAL(tx_data.fee_amount, expected_fee_amount);
     BOOST_REQUIRE_EQUAL(tx_data.change_amount, 0);
-    BOOST_REQUIRE_EQUAL(tx_data.change_path, nullptr);
+    BOOST_REQUIRE_EQUAL(tx_data.should_add_change_to_transaction(), false);
 }
 
 /// send max tests
@@ -353,7 +360,7 @@ BOOST_AUTO_TEST_CASE(send_max__uses_all_utxos__amount_is_total_value_minus_fee)
     BOOST_REQUIRE_EQUAL(tx_data.amount, expected_amount);
     BOOST_REQUIRE_EQUAL(tx_data.fee_amount, expected_fee_amount);
     BOOST_REQUIRE_EQUAL(tx_data.change_amount, 0);
-    BOOST_REQUIRE_EQUAL(tx_data.change_path, nullptr);
+    BOOST_REQUIRE_EQUAL(tx_data.should_add_change_to_transaction(), false);
 }
 
 BOOST_AUTO_TEST_CASE(send_max__with_insufficient_funds__returns_false)
@@ -399,7 +406,7 @@ BOOST_AUTO_TEST_CASE(send_max__with_just_enough_funds__returns_true)
     BOOST_REQUIRE_EQUAL(tx_data.fee_amount, expected_fee_amount);
     BOOST_REQUIRE_EQUAL(tx_data.fee_amount, 670);
     BOOST_REQUIRE_EQUAL(tx_data.change_amount, 0);
-    BOOST_REQUIRE_EQUAL(tx_data.change_path, nullptr);
+    BOOST_REQUIRE_EQUAL(tx_data.should_add_change_to_transaction(), false);
 }
 
 BOOST_AUTO_TEST_CASE(send_max__to_native_segwit_output__returns_true)
@@ -429,7 +436,7 @@ BOOST_AUTO_TEST_CASE(send_max__to_native_segwit_output__returns_true)
     BOOST_REQUIRE_EQUAL(tx_data.amount, expected_amount);
     BOOST_REQUIRE_EQUAL(tx_data.fee_amount, expected_fee_amount);
     BOOST_REQUIRE_EQUAL(tx_data.change_amount, 0);
-    BOOST_REQUIRE_EQUAL(tx_data.change_path, nullptr);
+    BOOST_REQUIRE_EQUAL(tx_data.should_add_change_to_transaction(), false);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -22,6 +22,9 @@
 namespace coinninja {
 namespace wallet {
 
+derivation_path::derivation_path()
+    : derivation_path{49,0,0,0,0} { }
+
 derivation_path::derivation_path(uint32_t purpose, uint32_t coin, uint32_t account, uint32_t change, uint32_t index)
     : purpose{purpose}, coin{coin}, account{account}, change{change}, index{index} { }
 

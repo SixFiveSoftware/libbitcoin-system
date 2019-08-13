@@ -26,6 +26,7 @@ namespace wallet {
 
     class derivation_path {
     public:
+        derivation_path();
         derivation_path(uint32_t purpose, uint32_t coin = 0, uint32_t account = 0, uint32_t change = 0, uint32_t index = 0);
 
         uint32_t get_coin();

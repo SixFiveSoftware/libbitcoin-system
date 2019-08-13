@@ -43,11 +43,11 @@ public:
         uint64_t amount,
         uint64_t fee_amount,
         uint64_t change_amount,
-        coinninja::wallet::derivation_path *change_path,
+        coinninja::wallet::derivation_path change_path,
         uint64_t block_height,
         bool should_be_rbf = false
         );
-
+    
     // static creation methods
     /**
      * Create transaction data object using a fee rate, calculating fee via number of inputs and outputs.
@@ -58,7 +58,7 @@ public:
      * @param all_unspent_transaction_outputs A vector of all available UTXOs, those needed will be selected during construction
      * @param amount The amount which you would like to send to the recipient
      * @param fee_rate The fee rate to be multiplied by transaction size
-     * @param change_path The derivation path for receiving change, if any (nullptr if no change needed)
+     * @param change_path The derivation path for receiving change, if any
      * @param block_height The current block height, used to calculate locktime (block_height + 1)
      * @return True with a populated reference as the first parameter if the object is able to satisfy amount+fee with UTXOs, or false if insufficient funds
      */
@@ -68,7 +68,7 @@ public:
         std::vector<coinninja::transaction::unspent_transaction_output> all_unspent_transaction_outputs,
         uint64_t amount,
         uint16_t fee_rate,
-        coinninja::wallet::derivation_path *change_path,
+        coinninja::wallet::derivation_path change_path,
         uint64_t block_height
         );
 
@@ -80,7 +80,7 @@ public:
      * @param all_unspent_transaction_outputs An array of all available UTXOs, which will be selected by this method.
      * @param amount The amount which you would like to send to the receipient.
      * @param flat_fee The flat-fee to pay, NOT a rate. This fee, added to amount, will equal the total deducted from the wallet.
-     * @param change_path The derivative path for receiving change, if any.
+     * @param change_path The derivation path for receiving change, if any.
      * @param block_height The current block height, used to calculate the locktime (blockHeight + 1).
      * @return True with a populated reference as the first parameter if the object is able to satisfy amount+fee with UTXOs, or false if insufficient funds
      */
@@ -90,7 +90,7 @@ public:
         std::vector<coinninja::transaction::unspent_transaction_output>all_unspent_transaction_outputs,
         uint64_t amount,
         uint64_t flat_fee,
-        coinninja::wallet::derivation_path *change_path,
+        coinninja::wallet::derivation_path change_path,
         uint64_t block_height
     );
 
@@ -120,7 +120,7 @@ public:
     uint64_t amount{};
     uint64_t fee_amount{};
     uint64_t change_amount{};
-    coinninja::wallet::derivation_path *change_path{nullptr};
+    coinninja::wallet::derivation_path change_path{};
     uint64_t locktime{};
 
     /**
