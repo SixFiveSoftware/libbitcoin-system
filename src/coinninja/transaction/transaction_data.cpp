@@ -26,7 +26,6 @@ namespace transaction {
 /**
  * constructors
  */
-
 transaction_data::transaction_data()
     : coin{coinninja::wallet::base_coin(coinninja::wallet::coin_derivation_purpose::BIP49)}
 { }

@@ -31,6 +31,13 @@ transaction_metadata::transaction_metadata(
     : txid{txid}, encoded_tx{encoded_tx}, change_address{change_address}, change_path{change_path}, vout_index{vout_index}
 { }
 
+transaction_metadata::~transaction_metadata()
+{
+    delete change_address;
+    delete change_path;
+    delete vout_index;
+}
+
 std::string transaction_metadata::get_txid() { return txid; }
 std::string transaction_metadata::get_encoded_tx() { return encoded_tx; }
 std::string* transaction_metadata::get_change_address() { return change_address; }

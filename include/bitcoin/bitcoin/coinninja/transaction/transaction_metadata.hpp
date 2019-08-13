@@ -35,6 +35,8 @@ public:
         coinninja::wallet::derivation_path *change_path = nullptr,
         uint *vout_index = nullptr);
 
+    ~transaction_metadata();
+
     std::string get_txid();
     std::string get_encoded_tx();
     std::string *get_change_address();
