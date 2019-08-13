@@ -28,6 +28,7 @@ using namespace wallet;
 namespace coinninja {
 namespace wallet {
 
+    word_list all_bip_39_words();
     word_list create_mnemonic(const data_slice &entropy, const dictionary &lexicon=language::en);
 
 } // namespace wallet

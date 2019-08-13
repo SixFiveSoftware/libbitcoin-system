@@ -53,7 +53,6 @@ src_libbitcoin_la_SOURCES = \
     src/chain/witness.cpp \
     src/coinninja/wallet/base_coin.cpp \
     src/coinninja/wallet/derivation_path.cpp \
-    src/coinninja/wallet/hd_wallet.cpp \
     src/coinninja/wallet/key_factory.cpp \
     src/coinninja/wallet/mnemonic.cpp \
     src/coinninja/address/address_helper.hpp \
@@ -258,7 +257,6 @@ test_libbitcoin_test_SOURCES = \
     test/chain/script.hpp \
     test/chain/transaction.cpp \
     test/coinninja/wallet/base_coin.cpp \
-    test/coinninja/wallet/hd_wallet.cpp \
     test/coinninja/wallet/key_factory.cpp \
     test/coinninja/wallet/mnemonic.cpp \
     test/coinninja/address/segwit_address.cpp \
@@ -393,7 +391,6 @@ include_bitcoin_bitcoin_coinninja_walletdir = ${includedir}/bitcoin/bitcoin/coin
 include_bitcoin_bitcoin_coinninja_wallet_HEADERS = \
     include/bitcoin/bitcoin/coinninja/wallet/base_coin.hpp \
     include/bitcoin/bitcoin/coinninja/wallet/derivation_path.hpp \
-    include/bitcoin/bitcoin/coinninja/wallet/hd_wallet.hpp \
     include/bitcoin/bitcoin/coinninja/wallet/key_factory.hpp \
     include/bitcoin/bitcoin/coinninja/wallet/mnemonic.hpp
 

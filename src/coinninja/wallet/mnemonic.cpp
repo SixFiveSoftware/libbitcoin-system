@@ -23,6 +23,19 @@
 namespace coinninja {
 namespace wallet {
 
+word_list all_bip_39_words()
+{
+    bc::wallet::dictionary words = bc::wallet::language::en;
+    const int length = words.size();
+    std::vector<std::string> result(length);
+    for (size_t i{0}; i < length; ++i)
+    {
+        std::string word = std::string(words[i]);
+        result.at(i) = word;
+    }
+    return result;
+}
+
 word_list create_mnemonic(const data_slice &entropy, const dictionary &lexicon)
 {
     word_list mnemonic{bc::wallet::create_mnemonic(entropy, lexicon)};

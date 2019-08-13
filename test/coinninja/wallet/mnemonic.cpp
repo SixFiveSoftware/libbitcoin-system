@@ -54,4 +54,19 @@ BOOST_AUTO_TEST_CASE(mnemonic__create_mnemonic__bx)
     }
 }
 
+BOOST_AUTO_TEST_CASE(mnemonic__all_bip_39_words)
+{
+    std::vector<std::string> words = coinninja::wallet::all_bip_39_words();
+    BOOST_REQUIRE_EQUAL(words.size(), 2048);
+    BOOST_REQUIRE_NE(words.at(0), words.at(1));
+}
+
+BOOST_AUTO_TEST_CASE(mnemonic__init_with_entropy__creates_mnemonic)
+{
+    bc::data_chunk entropy(16);
+    pseudo_random_fill(entropy);
+    const auto mnemonic = coinninja::wallet::create_mnemonic(entropy);
+    BOOST_REQUIRE_EQUAL(mnemonic.size(), 12);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
