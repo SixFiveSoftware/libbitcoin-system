@@ -128,6 +128,7 @@ public:
      */
     bool get_should_be_rbf();
     bool should_add_change_to_transaction();
+    coinninja::wallet::base_coin get_coin();
 
 private:
     coinninja::wallet::base_coin coin;

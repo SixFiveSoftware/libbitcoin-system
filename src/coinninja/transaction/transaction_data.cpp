@@ -245,5 +245,10 @@ uint16_t transaction_data::byte_estimate_for(uint8_t input_count, const std::str
     return helper.total_bytes(input_count, payment_address, include_change_output);
 }
 
+coinninja::wallet::base_coin transaction_data::get_coin()
+{
+    return coin;
+}
+
 } // namespace transaction
 } // namespace coinninja
