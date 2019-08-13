@@ -35,6 +35,9 @@ public:
         coinninja::wallet::derivation_path *change_path = nullptr,
         uint *vout_index = nullptr);
 
+    // copy constructor
+    transaction_metadata(const transaction_metadata &source);
+
     ~transaction_metadata();
 
     std::string get_txid();
