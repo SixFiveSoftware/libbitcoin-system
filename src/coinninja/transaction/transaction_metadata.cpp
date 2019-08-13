@@ -22,42 +22,23 @@
 namespace coinninja {
 namespace transaction {
 
-transaction_metadata::transaction_metadata(
-    std::string txid, 
-    std::string encoded_tx, 
-    std::string *change_address, 
-    coinninja::wallet::derivation_path *change_path, 
-    uint *vout_index)
-    : txid{txid}, encoded_tx{encoded_tx}, change_address{change_address}, change_path{change_path}, vout_index{vout_index}
+transaction_metadata::transaction_metadata(std::string txid, std::string encoded_tx)
+    : txid{txid}, encoded_tx{encoded_tx}
 { }
 
-// copy constructor
-transaction_metadata::transaction_metadata(const transaction_metadata &source)
-    : txid{source.txid}, encoded_tx{source.encoded_tx}
+transaction_metadata::transaction_metadata(std::string txid, std::string encoded_tx, std::string change_address, coinninja::wallet::derivation_path change_path, uint vout_index)
+    : txid{txid}, encoded_tx{encoded_tx}
 {
-    if (source.change_address != nullptr)
-    {
-        change_address = new std::string{};
-        *change_address = *source.change_address;
-    }
-    if (source.change_path != nullptr)
-    {
-        change_path = new coinninja::wallet::derivation_path{};
-        *change_path = *source.change_path;
-    }
-    if (source.vout_index != nullptr)
-    {
-        vout_index = new uint{0};
-        *vout_index = *source.vout_index;
-    }
+    this->change_address = new std::string{change_address};
+    this->change_path = new coinninja::wallet::derivation_path{change_path};
+    this->vout_index = new uint{vout_index};
 }
-
 
 transaction_metadata::~transaction_metadata()
 {
-    delete change_address;
-    delete change_path;
-    delete vout_index;
+    if (change_address != nullptr) { delete change_address; }
+    if (change_path != nullptr) { delete change_path; }
+    if (vout_index != nullptr) { delete vout_index; }
 }
 
 std::string transaction_metadata::get_txid() { return txid; }

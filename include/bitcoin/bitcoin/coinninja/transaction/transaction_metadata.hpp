@@ -28,15 +28,8 @@ namespace transaction {
 
 class transaction_metadata {
 public:
-    transaction_metadata(
-        std::string txid, 
-        std::string encoded_tx, 
-        std::string *change_address = nullptr, 
-        coinninja::wallet::derivation_path *change_path = nullptr,
-        uint *vout_index = nullptr);
-
-    // copy constructor
-    transaction_metadata(const transaction_metadata &source);
+    transaction_metadata(std::string txid, std::string encoded_tx);
+    transaction_metadata(std::string txid, std::string encoded_tx, std::string change_address, coinninja::wallet::derivation_path change_path, uint vout_index);
 
     ~transaction_metadata();
 
