@@ -34,6 +34,26 @@ transaction_metadata::transaction_metadata(std::string txid, std::string encoded
     this->vout_index = new uint{vout_index};
 }
 
+transaction_metadata::transaction_metadata(const transaction_metadata &source)
+    : txid{source.txid}, encoded_tx{source.encoded_tx}
+{
+    if (source.change_address != nullptr)
+    {
+        this->change_address = new std::string{};
+        *change_address = *source.change_address;
+    }
+    if (source.change_path != nullptr)
+    {
+        this->change_path = new coinninja::wallet::derivation_path{};
+        *change_path = *source.change_path;
+    }
+    if (source.vout_index != nullptr)
+    {
+        this->vout_index = new uint{};
+        *vout_index = *source.vout_index;
+    }
+}
+
 transaction_metadata::~transaction_metadata()
 {
     if (change_address != nullptr) { delete change_address; }

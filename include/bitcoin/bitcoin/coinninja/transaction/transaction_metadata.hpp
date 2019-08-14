@@ -31,6 +31,9 @@ public:
     transaction_metadata(std::string txid, std::string encoded_tx);
     transaction_metadata(std::string txid, std::string encoded_tx, std::string change_address, coinninja::wallet::derivation_path change_path, uint vout_index);
 
+    // copy constructor
+    transaction_metadata(const transaction_metadata &source);
+
     ~transaction_metadata();
 
     std::string get_txid();
