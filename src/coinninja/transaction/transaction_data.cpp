@@ -222,12 +222,12 @@ bool transaction_data::create_send_max_transaction_data(coinninja::transaction::
     return true;
 }
     
-bool transaction_data::get_should_be_rbf()
+bool transaction_data::get_should_be_rbf() const
 {
     return should_be_rbf;
 }
 
-bool transaction_data::should_add_change_to_transaction()
+bool transaction_data::should_add_change_to_transaction() const
 {
     return (change_amount > 0);
 }

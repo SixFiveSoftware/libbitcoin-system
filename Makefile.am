@@ -60,6 +60,7 @@ src_libbitcoin_la_SOURCES = \
     src/coinninja/address/bech32.cpp \
     src/coinninja/address/meta_address.cpp \
     src/coinninja/address/segwit_address.cpp \
+    src/coinninja/transaction/transaction_builder.cpp \
     src/coinninja/transaction/transaction_data.cpp \
     src/coinninja/transaction/transaction_metadata.cpp \
     src/coinninja/transaction/unspent_transaction_output.cpp \
@@ -402,6 +403,7 @@ include_bitcoin_bitcoin_coinninja_address_HEADERS = \
 
 include_bitcoin_bitcoin_coinninja_transactiondir = ${includedir}/bitcoin/bitcoin/coinninja/transaction
 include_bitcoin_bitcoin_coinninja_transaction_HEADERS = \
+    include/bitcoin/bitcoin/coinninja/transaction/transaction_builder.hpp \
     include/bitcoin/bitcoin/coinninja/transaction/transaction_data.hpp \
     include/bitcoin/bitcoin/coinninja/transaction/transaction_metadata.hpp \
     include/bitcoin/bitcoin/coinninja/transaction/unspent_transaction_output.hpp \

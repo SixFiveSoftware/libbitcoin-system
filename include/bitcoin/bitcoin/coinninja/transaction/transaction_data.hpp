@@ -126,8 +126,8 @@ public:
     /**
      * Member methods
      */
-    bool get_should_be_rbf();
-    bool should_add_change_to_transaction();
+    bool get_should_be_rbf() const;
+    bool should_add_change_to_transaction() const;
     coinninja::wallet::base_coin get_coin();
 
 private:
