@@ -79,6 +79,12 @@
         "typeinfo": "cpp",
         "unordered_map": "cpp",
         "variant": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "clocale": "cpp",
+        "bit": "cpp",
+        "*.tcc": "cpp",
+        "memory_resource": "cpp",
+        "cfenv": "cpp",
+        "cinttypes": "cpp"
     }
 }

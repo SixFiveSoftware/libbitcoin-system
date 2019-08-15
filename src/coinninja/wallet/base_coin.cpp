@@ -30,7 +30,7 @@ coin_derivation_purpose base_coin::get_purpose()
     return purpose;
 }
 
-coin_derivation_coin base_coin::get_coin()
+coin_derivation_coin base_coin::get_coin() const
 {
     return coin;
 }

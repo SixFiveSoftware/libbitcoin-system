@@ -43,8 +43,9 @@ coinninja::transaction::transaction_metadata transaction_builder::generate_tx_me
     // return metadata
     if (data.should_add_change_to_transaction())
     {
-        coinninja::transaction::usable_address usable_address{master_private_key, data.change_path};
-        std::string change_address{usable_address.build_payment_address()};
+        coinninja::transaction::usable_address change{master_private_key, data.change_path};
+        auto change_payment_address{change.build_payment_address()};
+        auto change_address{change_payment_address.encoded()};
         auto change_path{data.change_path};
         uint vout_index{0};
 
@@ -52,10 +53,10 @@ coinninja::transaction::transaction_metadata transaction_builder::generate_tx_me
         auto pkver = (coin.get_coin() == 0) ? payment_address::mainnet_p2kh : payment_address::testnet_p2kh;
         auto shver = (coin.get_coin() == 0) ? payment_address::mainnet_p2sh : payment_address::testnet_p2sh;
 
-        for (size_t i{transaction.outputs().size()}; i >= 0; i--)
+        for (size_t i{0}; i < transaction.outputs().size(); ++i)
         {
             auto output = transaction.outputs().at(i);
-            std::string possible_change_address{output.address(pkver, shver)};
+            std::string possible_change_address{output.address(pkver, shver).encoded()};
             if (possible_change_address == change_address)
             {
                 vout_index = static_cast<uint>(i);

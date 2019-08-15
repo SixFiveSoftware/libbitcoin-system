@@ -41,7 +41,7 @@ namespace wallet {
         public:
             base_coin(coin_derivation_purpose purpose = BIP49, coin_derivation_coin coin = MainNet, int account = 0);
             coin_derivation_purpose get_purpose();
-            coin_derivation_coin get_coin();
+            coin_derivation_coin get_coin() const;
             int get_account();
             std::string get_bech32_hrp();
 
