@@ -162,7 +162,7 @@ bool transaction_data::create_flat_fee_transaction_data(coinninja::transaction::
         total_from_utxos += output.amount;
 
         int possible_change = static_cast<int>(total_from_utxos) - static_cast<int>(amount) - static_cast<int>(flat_fee);
-        int temp_change_amount = MAX(0, possible_change);
+        int temp_change_amount = std::max(0, possible_change);
         return_data.change_amount = static_cast<uint64_t>(temp_change_amount);
 
         if (total_from_utxos >= amount && temp_change_amount > 0)
