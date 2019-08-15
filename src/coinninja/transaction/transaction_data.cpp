@@ -192,7 +192,7 @@ bool transaction_data::create_send_max_transaction_data(coinninja::transaction::
 {
     coinninja::wallet::derivation_path dummy_change{}; // just used to satisfy parameter; not used as there is no change when sending max.
     coinninja::transaction::transaction_data return_data{
-        payment_address, coin, {}, 0, 0, 0, dummy_change, block_height
+        payment_address, coin, all_unspent_transaction_outputs, 0, 0, 0, dummy_change, block_height
     };
 
     coinninja::address::address_helper helper{coin};

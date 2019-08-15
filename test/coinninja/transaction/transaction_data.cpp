@@ -359,6 +359,7 @@ BOOST_AUTO_TEST_CASE(send_max__uses_all_utxos__amount_is_total_value_minus_fee)
     BOOST_REQUIRE(success);
     BOOST_REQUIRE_EQUAL(tx_data.amount, expected_amount);
     BOOST_REQUIRE_EQUAL(tx_data.fee_amount, expected_fee_amount);
+    BOOST_REQUIRE_EQUAL(tx_data.unspent_transaction_outputs.size(), utxos.size());
     BOOST_REQUIRE_EQUAL(tx_data.change_amount, 0);
     BOOST_REQUIRE_EQUAL(tx_data.should_add_change_to_transaction(), false);
 }
