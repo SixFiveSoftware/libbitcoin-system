@@ -50,7 +50,7 @@ private:
     bc::chain::output output_with_address(const std::string &address, const uint64_t &amount);
     bc::chain::output create_p2pkh_output(const bc::wallet::payment_address &payment_address, const uint64_t &amount);
     bc::chain::output create_p2sh_output(const bc::wallet::payment_address &payment_address, const uint64_t &amount);
-    bc::chain::output create_segwit_output(const std::string &address, const uint64_t &amount);
+    bc::chain::output create_segwit_output(const std::string &address, const std::string &hrp, const uint64_t &amount);
     bc::machine::operation::list create_segwit_hash_pattern(const bc::data_chunk &hash);
     void populate_utxos(bc::chain::transaction &tx, const coinninja::transaction::transaction_data &data);
     void sign_inputs(bc::chain::transaction &tx, const coinninja::transaction::transaction_data &data);

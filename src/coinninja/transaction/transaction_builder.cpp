@@ -22,6 +22,8 @@
 #include <bitcoin/bitcoin/coinninja/address/segwit_address.hpp>
 #include <bitcoin/bitcoin/coinninja/transaction/usable_address.hpp>
 
+using namespace coinninja::wallet;
+
 namespace coinninja {
 namespace transaction {
 
@@ -116,7 +118,19 @@ bc::chain::output transaction_builder::output_with_address(const std::string &ad
         case coinninja::address::payment_output_type::P2WPKH:
         case coinninja::address::payment_output_type::P2WSH:
         {
-            return create_segwit_output(address, amount);
+            bool is_p2wpkh{coinninja::address::segwit_address::is_valid_p2wpkh_address(address)};
+            bool is_p2wsh{coinninja::address::segwit_address::is_valid_p2wsh_address(address)};
+            bool is_valid{is_p2wpkh || is_p2wsh};
+            if (is_valid)
+            {
+                auto net = (coin.get_coin() == 0) ? coin_derivation_coin::MainNet : coin_derivation_coin::TestNet;
+                base_coin segwit_coin{coin_derivation_purpose::BIP84, net};
+                const std::string hrp{segwit_coin.get_bech32_hrp()};
+                return create_segwit_output(address, hrp, amount);
+            } else {
+                throw "Illegal payment address";
+                break;
+            }
         }
         
         default:
@@ -137,9 +151,8 @@ bc::chain::output transaction_builder::create_p2sh_output(const bc::wallet::paym
     return bc::chain::output(amount, bc::chain::script(bc::chain::script().to_pay_script_hash_pattern(payment_address.hash())));
 }
 
-bc::chain::output transaction_builder::create_segwit_output(const std::string &address, const uint64_t &amount)
+bc::chain::output transaction_builder::create_segwit_output(const std::string &address, const std::string &hrp, const uint64_t &amount)
 {
-    auto hrp{coin.get_bech32_hrp()};
     auto decoded = coinninja::address::segwit_address::decode(hrp, address);
     auto witprog{decoded.second};
     return bc::chain::output(amount, create_segwit_hash_pattern(witprog));
