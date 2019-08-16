@@ -25,6 +25,12 @@ namespace wallet {
 base_coin::base_coin(coin_derivation_purpose purpose, coin_derivation_coin coin, int account)
     : purpose{purpose}, coin{coin}, account{account} { }
 
+base_coin::base_coin(derivation_path &path)
+    : purpose{static_cast<coin_derivation_purpose>(path.get_purpose())},
+    coin{static_cast<coin_derivation_coin>(path.get_coin())},
+    account{static_cast<int>(path.get_account())}
+{ }
+
 coin_derivation_purpose base_coin::get_purpose()
 {
     return purpose;

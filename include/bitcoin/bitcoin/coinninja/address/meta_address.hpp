@@ -28,7 +28,7 @@ namespace address {
 
 class meta_address {
 public:
-    meta_address(std::string address, coinninja::wallet::derivation_path path, std::string uncompressed_public_key);
+    meta_address(std::string address, coinninja::wallet::derivation_path path, std::string uncompressed_public_key = "");
     std::string get_address();
     coinninja::wallet::derivation_path get_derivation_path();
     std::string get_uncompressed_public_key();

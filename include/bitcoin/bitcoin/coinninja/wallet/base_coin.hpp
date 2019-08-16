@@ -20,6 +20,9 @@
 #define COINNINJA_BASE_COIN_HPP
 
 #include <string>
+#include <bitcoin/bitcoin/coinninja/wallet/derivation_path.hpp>
+
+using namespace coinninja::wallet;
 
 namespace coinninja {
 namespace wallet {
@@ -40,6 +43,7 @@ namespace wallet {
     class base_coin {
         public:
             base_coin(coin_derivation_purpose purpose = BIP49, coin_derivation_coin coin = MainNet, int account = 0);
+            base_coin(derivation_path &path);
             coin_derivation_purpose get_purpose();
             coin_derivation_coin get_coin() const;
             int get_account();

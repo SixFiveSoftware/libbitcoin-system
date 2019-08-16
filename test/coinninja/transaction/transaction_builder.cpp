@@ -18,37 +18,15 @@
  */
 
 #include <boost/test/unit_test.hpp>
-#include <bitcoin/bitcoin.hpp>
 #include <bitcoin/bitcoin/coinninja/transaction/transaction_builder.hpp>
 #include <bitcoin/bitcoin/coinninja/wallet/base_coin.hpp>
 #include <bitcoin/bitcoin/coinninja/transaction/unspent_transaction_output.hpp>
+#include <test/test_helpers.hpp>
 #include <vector>
 
 using namespace coinninja::wallet;
 using namespace coinninja::transaction;
 using namespace bc::wallet;
-
-bc::wallet::hd_private private_key_for(const word_list &words, const base_coin &coin)
-{
-    auto seed = bc::to_chunk(decode_mnemonic(words));
-    auto net = (coin.get_coin() == 0) ? hd_private::mainnet : hd_private::testnet;
-    return hd_private(seed, net);
-}
-
-word_list words {
-    std::string{"abandon"},
-    std::string{"abandon"},
-    std::string{"abandon"},
-    std::string{"abandon"},
-    std::string{"abandon"},
-    std::string{"abandon"},
-    std::string{"abandon"},
-    std::string{"abandon"},
-    std::string{"abandon"},
-    std::string{"abandon"},
-    std::string{"abandon"},
-    std::string{"about"}
-};
 
 BOOST_AUTO_TEST_SUITE(cn_transaction_builder_tests)
 
@@ -73,7 +51,7 @@ BOOST_AUTO_TEST_CASE(transaction_builder__transaction_gets_built_correctly)
     std::string expected_txid{"9ea15d4a60c33a1be64da5805c399663831f7aee13724bfa702db2c3cfafd5bb"};
     std::string expected_change_address{"3NBJnvo9U5YbJnr1pALFqQEur1wXWJrjoM"};
 
-    hd_private master_private_key = private_key_for(words, coin);
+    hd_private master_private_key = private_key_for(test_only_words, coin);
     transaction_builder builder{master_private_key, coin};
 
     // when
@@ -109,7 +87,7 @@ BOOST_AUTO_TEST_CASE(transaction_builder__builds_tx__with_two_inputs)
     const std::string expected_txid{"f94e7111736dd2a5fd1c5bbcced153f90d17ee1b032f166dda785354f4063651"};
     const std::string expected_change_address{"3GhXz1NGhwQusEiBYKKhTqQYE6MKt2utDN"};
 
-    const auto master_private_key{private_key_for(words, coin)};
+    const auto master_private_key{private_key_for(test_only_words, coin)};
     transaction_builder builder{master_private_key, coin};
 
     auto tx_metadata{builder.generate_tx_metadata(tx_data)};
@@ -137,7 +115,7 @@ BOOST_AUTO_TEST_CASE(transaction_builder__build_single_utxo_mainnet)
     const std::string to_address{"3ERQiyXSeUYmxxqKyg8XwqGo4W7utgDrTR"};
     transaction_data tx_data{to_address, coin, utxos, amount, fees_amount, change_amount, change_path, 500000};
 
-    const auto master_private_key{private_key_for(words, coin)};
+    const auto master_private_key{private_key_for(test_only_words, coin)};
     transaction_builder builder{master_private_key, coin};
 
     const std::string expected_encoded_tx{"01000000000101fa3ecda170cdb6d1b4c6a668e70428f6944691ff83294770b5fe0ea01ee380340100000017160014f990679acafe25c27615373b40bf22446d24ff44ffffffff02105503000000000017a9148ba60342bf59f73327fecab2bef17c1612888c3587b98503000000000017a9141cc1e09a63d1ae795a7130e099b28a0b1d8e4fae8702483045022100ee83c25a1dd4f7c31724cbdb3ea4b12c65dbc7c9c5c602033614d436f9a5a947022008f84fbc34fd9fafe7b1581d8a980c558bdd1429b4a6badb126235aea5bf9c230121039b3b694b8fc5b5e07fb069c783cac754f5d38c3e08bed1960e31fdb1dda35c2420a10700"};
@@ -168,7 +146,7 @@ BOOST_AUTO_TEST_CASE(transaction_builder__build_p2kh__no_change__mainnet)
     const std::string to_address{"1HT6WtD5CAToc8wZdacCgY4XjJR4jV5Q5d"};
     transaction_data tx_data{to_address, coin, utxos, amount, fees_amount, 0, change_path, 500000};
 
-    const auto master_private_key{private_key_for(words, coin)};
+    const auto master_private_key{private_key_for(test_only_words, coin)};
     transaction_builder builder{master_private_key, coin};
 
     const std::string expected_encoded_tx{"010000000001014e38dce64bc188318e2fe1fd5038c954b821b0828ca6a51a0c6ed26af71449f10100000017160014b4381165b195b3286079d46eb2dc8058e6f02241ffffffff016b5a0000000000001976a914b4716e71b900b957e49f749c8432b910417788e888ac02483045022100f8a78ff2243c591ffb7af46ed670b173e5e5dd3f19853493f5c3bda85425f8ef02203d152fdc632388da527c4a58b796a8a40d1a9d15176d80dedfef96a38ecc9ae7012103a45ef894ab9e6f2e55683561181be9e69b20207af746d60b95fab33476dc932420a10700"};
@@ -199,7 +177,7 @@ BOOST_AUTO_TEST_CASE(transaction_builder__single_utxo__no_change__mainnet)
     const std::string to_address{"3Aftutd9VvzLcGxD9VraNhWiHyjR5pvn5N"};
     transaction_data tx_data{to_address, coin, utxos, amount, fees_amount, change_amount, change_path, 541133};
 
-    const auto master_private_key{private_key_for(words, coin)};
+    const auto master_private_key{private_key_for(test_only_words, coin)};
     transaction_builder builder{master_private_key, coin};
 
     const std::string expected_encoded_tx{"01000000000101c2fa1f3dfcc8d121f423885bfbb4579b1f1b653b7b7b86393aeddde154b58b9a0100000017160014f990679acafe25c27615373b40bf22446d24ff44ffffffff01be5202000000000017a9146282dd071fc766f3749136dd0fee99c4f3db17038702483045022100f9ffebc8107b7342b4256d6879fe48c3858c9a141c2e405ef064fd416efdb01702206991995c00c6f6cf2add7710c959fe9cabf6e9e94f82a596813cef0b12bc37430121039b3b694b8fc5b5e07fb069c783cac754f5d38c3e08bed1960e31fdb1dda35c24cd410800"};
@@ -230,7 +208,7 @@ BOOST_AUTO_TEST_CASE(transaction_builder__testnet__metadata_creation)
     const std::string to_address{"2N8o4Mu5PRAR27TC2eai62CRXarTbQmjyCx"};
     transaction_data tx_data{to_address, coin, utxos, amount, fees_amount, change_amount, change_path, 644};
 
-    const auto master_private_key{private_key_for(words, coin)};
+    const auto master_private_key{private_key_for(test_only_words, coin)};
     transaction_builder builder{master_private_key, coin};
 
     const std::string expected_encoded_tx{"0100000000010126af32df83e27e27711f48d8ca76ee8776ea765d0a9b498bc448e2fb0e00fd1c000000001716001438971f73930f6c141d977ac4fd4a727c854935b3ffffffff02625291000000000017a914aa8f293a04a7df8794b743e14ffb96c2a30a1b2787e026f0490000000017a914251dd11457a259c3ba47e5cca3717fe4214e0298870247304402207eb5d799dea2bd9bbed68f94559ae7447aedb600dd59e68721975868ea16f87e022009f477da2f5755742cf31e125e5f8724d67a10cfbe5b370d7b8eaf06baf694ca012103a1af804ac108a8a51782198c2d034b28bf90c8803f5a53f76276fa69a4eae77f84020000"};
@@ -264,7 +242,7 @@ BOOST_AUTO_TEST_CASE(transaction_builder__send_to_native_segwit__builds_properly
     const std::string to_address{"bc1ql2sdag2nm9csz4wmlj735jxw88ym3yukyzmrpj"};
     transaction_data tx_data{to_address, coin, utxos, amount, fees_amount, change_amount, change_path, 500000};
 
-    const auto master_private_key{private_key_for(words, coin)};
+    const auto master_private_key{private_key_for(test_only_words, coin)};
     transaction_builder builder{master_private_key, coin};
 
     const std::string expected_encoded_tx{"01000000000101908f5dff31e192c4cca1b0758ae60734138e6c636e901d295b402ad5fbbcb594000000001716001442288ee31111f7187e8cfe8c82917c4734da4c2effffffff028813000000000000160014faa0dea153d9710155dbfcbd1a48ce39c9b89396a51000000000000017a914aa71651e8f7c618a4576873254ec80c4dfaa068b8702483045022100fc142e1aa34627b880363427e07fc8de82542eba5593030160fbc33d22101c4302207478c3407a15daf613f458eb32223fb6d89a62b93b1a701c404a1a2f3977aee701210270d4003d27b5340df1895ef3a5aee2ae2fe3ed7383c01ba623723e702b6c83c120a10700"};

@@ -60,11 +60,11 @@ src_libbitcoin_la_SOURCES = \
     src/coinninja/address/bech32.cpp \
     src/coinninja/address/meta_address.cpp \
     src/coinninja/address/segwit_address.cpp \
+    src/coinninja/address/usable_address.cpp \
     src/coinninja/transaction/transaction_builder.cpp \
     src/coinninja/transaction/transaction_data.cpp \
     src/coinninja/transaction/transaction_metadata.cpp \
     src/coinninja/transaction/unspent_transaction_output.cpp \
-    src/coinninja/transaction/usable_address.cpp \
     src/config/authority.cpp \
     src/config/base16.cpp \
     src/config/base2.cpp \
@@ -262,6 +262,7 @@ test_libbitcoin_test_SOURCES = \
     test/coinninja/wallet/mnemonic.cpp \
     test/coinninja/address/segwit_address.cpp \
     test/coinninja/address/address_helper.cpp \
+    test/coinninja/address/usable_address.cpp \
     test/coinninja/transaction/transaction_builder.cpp \
     test/coinninja/transaction/transaction_data.cpp \
     test/config/authority.cpp \
@@ -400,15 +401,15 @@ include_bitcoin_bitcoin_coinninja_addressdir = ${includedir}/bitcoin/bitcoin/coi
 include_bitcoin_bitcoin_coinninja_address_HEADERS = \
     include/bitcoin/bitcoin/coinninja/address/bech32.hpp \
     include/bitcoin/bitcoin/coinninja/address/meta_address.hpp \
-    include/bitcoin/bitcoin/coinninja/address/segwit_address.hpp
+    include/bitcoin/bitcoin/coinninja/address/segwit_address.hpp \
+    include/bitcoin/bitcoin/coinninja/address/usable_address.hpp
 
 include_bitcoin_bitcoin_coinninja_transactiondir = ${includedir}/bitcoin/bitcoin/coinninja/transaction
 include_bitcoin_bitcoin_coinninja_transaction_HEADERS = \
     include/bitcoin/bitcoin/coinninja/transaction/transaction_builder.hpp \
     include/bitcoin/bitcoin/coinninja/transaction/transaction_data.hpp \
     include/bitcoin/bitcoin/coinninja/transaction/transaction_metadata.hpp \
-    include/bitcoin/bitcoin/coinninja/transaction/unspent_transaction_output.hpp \
-    include/bitcoin/bitcoin/coinninja/transaction/usable_address.hpp
+    include/bitcoin/bitcoin/coinninja/transaction/unspent_transaction_output.hpp
 
 include_bitcoin_bitcoin_configdir = ${includedir}/bitcoin/bitcoin/config
 include_bitcoin_bitcoin_config_HEADERS = \

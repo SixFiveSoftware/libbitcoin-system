@@ -20,7 +20,7 @@
 #include <src/coinninja/address/address_helper.hpp>
 #include <bitcoin/bitcoin/coinninja/transaction/transaction_builder.hpp>
 #include <bitcoin/bitcoin/coinninja/address/segwit_address.hpp>
-#include <bitcoin/bitcoin/coinninja/transaction/usable_address.hpp>
+#include <bitcoin/bitcoin/coinninja/address/usable_address.hpp>
 
 using namespace coinninja::wallet;
 
@@ -45,7 +45,7 @@ coinninja::transaction::transaction_metadata transaction_builder::generate_tx_me
     // return metadata
     if (data.should_add_change_to_transaction())
     {
-        coinninja::transaction::usable_address change{master_private_key, data.change_path};
+        coinninja::address::usable_address change{master_private_key, data.change_path};
         auto change_payment_address{change.build_payment_address()};
         auto change_address{change_payment_address.encoded()};
         auto change_path{data.change_path};
@@ -83,7 +83,7 @@ bc::chain::transaction transaction_builder::transaction_from_data(const coinninj
     // calculate change
     if (data.should_add_change_to_transaction())
     {
-        coinninja::transaction::usable_address change{master_private_key, data.change_path};
+        coinninja::address::usable_address change{master_private_key, data.change_path};
         auto change_address{change.build_payment_address()};
         transaction.outputs().push_back(create_p2sh_output(change_address, data.change_amount));
     }
@@ -197,7 +197,7 @@ void transaction_builder::sign_inputs(bc::chain::transaction &tx, const coinninj
     {
         auto utxo{data.unspent_transaction_outputs[i]};
         auto path{utxo.path};
-        coinninja::transaction::usable_address signer{master_private_key, path};
+        coinninja::address::usable_address signer{master_private_key, path};
 
         bc::chain::script script_code = bc::chain::script::to_pay_key_hash_pattern(bc::bitcoin_short_hash(signer.build_compressed_public_key()));
         bc::endorsement signature;

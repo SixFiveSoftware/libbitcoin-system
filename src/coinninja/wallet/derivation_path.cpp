@@ -28,8 +28,16 @@ derivation_path::derivation_path()
 derivation_path::derivation_path(uint32_t purpose, uint32_t coin, uint32_t account, uint32_t change, uint32_t index)
     : purpose{purpose}, coin{coin}, account{account}, change{change}, index{index} { }
 
+uint32_t derivation_path::get_purpose() {
+    return purpose;
+}
+
 uint32_t derivation_path::get_coin() {
     return coin;
+}
+
+uint32_t derivation_path::get_account() {
+    return account;
 }
 
 uint32_t derivation_path::get_change() {
