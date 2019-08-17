@@ -199,7 +199,20 @@ void transaction_builder::sign_inputs(bc::chain::transaction &tx, const coinninj
         auto path{utxo.path};
         coinninja::address::usable_address signer{master_private_key, path};
 
-        bc::chain::script script_code = bc::chain::script::to_pay_key_hash_pattern(bc::bitcoin_short_hash(signer.build_compressed_public_key()));
+        bc::chain::script script_code;
+        // set scriptPubKey, per BIP 141.
+        if (path.get_purpose() == 49) {
+            // scriptPubKey: HASH160 <20-byte-script-hash> EQUAL
+            script_code = bc::chain::script::to_pay_key_hash_pattern(bc::bitcoin_short_hash(signer.build_compressed_public_key()));
+        } else { // 84
+            //scriptPubKey: 0 <20-byte-key-hash>
+            auto btc_address = signer.build_receive_address().get_address();
+            auto coin = base_coin{path};
+            auto hrp{coin.get_bech32_hrp()};
+            auto decoded = coinninja::address::segwit_address::decode(hrp, btc_address);
+            auto witprog = decoded.second;
+            script_code = create_segwit_hash_pattern(witprog);
+        }
         bc::endorsement signature;
         auto secret = signer.build_index_private_key().secret();
         bc::chain::script::create_endorsement(
@@ -212,9 +225,13 @@ void transaction_builder::sign_inputs(bc::chain::transaction &tx, const coinninj
             bc::machine::script_version::zero, 
             utxo.amount);
         
-        bc::data_chunk script_chunk = bc::to_chunk(signer.build_p2wpkh_script().to_data(true));
-        tx.inputs()[i].set_script(bc::chain::script(script_chunk, false));
-        bc::data_stack witness_data{signature, bc::to_chunk(signer.build_compressed_public_key())};
+        if (path.get_purpose() == 49)
+        {
+            // add scriptSig for P2SH-P2WPKH. Not needed for native SegWit
+            bc::data_chunk script_chunk = bc::to_chunk(signer.build_p2wpkh_script().to_data(true));
+            tx.inputs()[i].set_script(bc::chain::script(script_chunk, false));
+        }
+        bc::data_stack witness_data{bc::to_chunk(signature), bc::to_chunk(signer.build_compressed_public_key())};
         tx.inputs()[i].set_witness(bc::chain::witness(witness_data));
     }
 }
