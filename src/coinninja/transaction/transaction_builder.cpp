@@ -161,7 +161,7 @@ bc::data_chunk transaction_builder::segwit_script_pubkey(const int &witver, std:
     bc::data_chunk script_pubkey{};
     uint8_t witver_byte = (witver ? (0x80 | witver) : 0);
     script_pubkey.push_back(witver_byte);
-    script_pubkey.push_back(witprog.size());
+    // script_pubkey.push_back(witprog.size());
     script_pubkey.insert(script_pubkey.end(), witprog.begin(), witprog.end());
     return script_pubkey;
 }
@@ -214,7 +214,7 @@ void transaction_builder::sign_inputs(bc::chain::transaction &tx, const coinninj
             // scriptPubKey: HASH160 <20-byte-script-hash> EQUAL
             script_code = bc::chain::script::to_pay_key_hash_pattern(bc::bitcoin_short_hash(signer.build_compressed_public_key()));
         } else { // 84
-            //scriptPubKey: 0 0x14 <20-byte-key-hash>. 0x14 = 20, indicating 20 bytes, or 0x20 for 32, if P2WSH.
+            //scriptPubKey: 0 <20-byte-key-hash>
             auto btc_address = signer.build_receive_address().get_address();
             auto coin = base_coin{path};
             auto hrp{coin.get_bech32_hrp()};
@@ -236,12 +236,12 @@ void transaction_builder::sign_inputs(bc::chain::transaction &tx, const coinninj
             bc::machine::script_version::zero, 
             utxo.amount);
         
-        // if (path.get_purpose() == 49)
-        // {
+        if (path.get_purpose() == 49)
+        {
             // add scriptSig for P2SH-P2WPKH. Not needed for native SegWit
             bc::data_chunk script_chunk = bc::to_chunk(signer.build_p2wpkh_script().to_data(true));
             tx.inputs()[i].set_script(bc::chain::script(script_chunk, false));
-        // }
+        }
         bc::data_stack witness_data{bc::to_chunk(signature), bc::to_chunk(signer.build_compressed_public_key())};
         tx.inputs()[i].set_witness(bc::chain::witness(witness_data));
     }
