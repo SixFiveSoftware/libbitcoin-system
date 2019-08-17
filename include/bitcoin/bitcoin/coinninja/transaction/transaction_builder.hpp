@@ -54,6 +54,7 @@ private:
     bc::machine::operation::list create_segwit_hash_pattern(const bc::data_chunk &hash);
     void populate_utxos(bc::chain::transaction &tx, const coinninja::transaction::transaction_data &data);
     void sign_inputs(bc::chain::transaction &tx, const coinninja::transaction::transaction_data &data);
+    bc::data_chunk segwit_script_pubkey(const int &witver, std::vector<uint8_t>& witprog);
 };
 
 } // namespace transaction

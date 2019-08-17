@@ -157,6 +157,15 @@ bc::machine::operation::list transaction_builder::create_segwit_hash_pattern(con
     };
 }
 
+bc::data_chunk transaction_builder::segwit_script_pubkey(const int &witver, std::vector<uint8_t>& witprog) {
+    bc::data_chunk script_pubkey{};
+    uint8_t witver_byte = (witver ? (0x80 | witver) : 0);
+    script_pubkey.push_back(witver_byte);
+    script_pubkey.push_back(witprog.size());
+    script_pubkey.insert(script_pubkey.end(), witprog.begin(), witprog.end());
+    return script_pubkey;
+}
+
 void transaction_builder::populate_utxos(bc::chain::transaction &tx, const coinninja::transaction::transaction_data &data)
 {
     for (auto &utxo : data.unspent_transaction_outputs)
@@ -205,13 +214,15 @@ void transaction_builder::sign_inputs(bc::chain::transaction &tx, const coinninj
             // scriptPubKey: HASH160 <20-byte-script-hash> EQUAL
             script_code = bc::chain::script::to_pay_key_hash_pattern(bc::bitcoin_short_hash(signer.build_compressed_public_key()));
         } else { // 84
-            //scriptPubKey: 0 <20-byte-key-hash>
+            //scriptPubKey: 0 0x14 <20-byte-key-hash>. 0x14 = 20, indicating 20 bytes, or 0x20 for 32, if P2WSH.
             auto btc_address = signer.build_receive_address().get_address();
             auto coin = base_coin{path};
             auto hrp{coin.get_bech32_hrp()};
             auto decoded = coinninja::address::segwit_address::decode(hrp, btc_address);
+            auto witver = decoded.first;
             auto witprog = decoded.second;
-            script_code = create_segwit_hash_pattern(witprog);
+            auto script_pub_key_data = segwit_script_pubkey(witver, witprog);
+            script_code = bc::chain::script::factory_from_data(script_pub_key_data, true);
         }
         bc::endorsement signature;
         auto secret = signer.build_index_private_key().secret();
