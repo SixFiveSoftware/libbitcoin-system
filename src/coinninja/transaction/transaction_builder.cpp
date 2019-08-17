@@ -236,12 +236,12 @@ void transaction_builder::sign_inputs(bc::chain::transaction &tx, const coinninj
             bc::machine::script_version::zero, 
             utxo.amount);
         
-        if (path.get_purpose() == 49)
-        {
+        // if (path.get_purpose() == 49)
+        // {
             // add scriptSig for P2SH-P2WPKH. Not needed for native SegWit
             bc::data_chunk script_chunk = bc::to_chunk(signer.build_p2wpkh_script().to_data(true));
             tx.inputs()[i].set_script(bc::chain::script(script_chunk, false));
-        }
+        // }
         bc::data_stack witness_data{bc::to_chunk(signature), bc::to_chunk(signer.build_compressed_public_key())};
         tx.inputs()[i].set_witness(bc::chain::witness(witness_data));
     }
