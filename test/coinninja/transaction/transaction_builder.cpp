@@ -261,4 +261,38 @@ BOOST_AUTO_TEST_CASE(transaction_builder__send_to_native_segwit__builds_properly
     BOOST_REQUIRE_EQUAL(tx_metadata.get_change_path()->get_index(), 102);
 }
 
+BOOST_AUTO_TEST_CASE(transaction_builder__from_native_segwit__to_native_segwit)
+{
+    base_coin coin{coin_derivation_purpose::BIP84, coin_derivation_coin::MainNet};
+    derivation_path path{84, 0, 0, 0, 1};
+    unspent_transaction_output utxo{"a89a9bed1f2daca01a0dca58f7fd0f2f0bf114d762b38e65845c5d1489339a69", 0, 96537, path, true};
+    std::vector<unspent_transaction_output> utxos{utxo};
+    const uint64_t amount{9755};
+    const uint64_t fees_amount{846};
+    const uint64_t change_amount{85936};
+    derivation_path change_path{84, 0, 0, 1, 1};
+    const std::string to_address{"bc1qjv79zewlvyyyd5y0qfk3svexzrqnammllj7mw6"};
+    transaction_data tx_data{to_address, coin, utxos, amount, fees_amount, change_amount, change_path, 590582};
+
+    const auto master_private_key{private_key_for(test_only_words, coin)};
+    transaction_builder builder{master_private_key, coin};
+
+    const auto expected_encoded_tx{"01000000000101699a3389145d5c84658eb362d714f10b2f0ffdf758ca0d1aa0ac2d1fed9b9aa80000000000ffffffff021b26000000000000160014933c5165df610846d08f026d18332610c13eef7fb04f0100000000001600144227d834f1aae95273f0c87495f4ff0cb36654520247304402206dff721cc1aacc56bc9d41ed48bdcbae277d184112b90e7db175e452113f049b0220243e3f4006ccd6bf8a20cc5d95c2ab6e949a7bc2e3c299b9bfc241615431deb3012103e775fd51f0dfb8cd865d9ff1cca2a158cf651fe997fdc9fee9c1d3b5e995ea77f6020900"};
+    const auto expected_txid{"dff5b92552f363dffbdd680737647a3c9b6a0b0a0e1fe1d8e26f9d66f07e5126"};
+    const auto expected_change_address{"bc1qggnasd834t54yulsep6fta8lpjekv4zj6gv5rf"};
+
+    auto tx_metadata{builder.generate_tx_metadata(tx_data)};
+    auto encoded_tx{tx_metadata.get_encoded_tx()};
+    auto txid{tx_metadata.get_txid()};
+    auto change_address{tx_metadata.get_change_address()};
+
+    BOOST_REQUIRE_EQUAL(tx_data.payment_address, to_address);
+    BOOST_REQUIRE_EQUAL(*tx_metadata.get_change_address(), expected_change_address);
+    BOOST_REQUIRE_EQUAL(tx_metadata.get_change_path()->get_purpose(), 84);
+    BOOST_REQUIRE_EQUAL(encoded_tx, expected_encoded_tx);
+    BOOST_REQUIRE_EQUAL(txid, expected_txid);
+    BOOST_REQUIRE_EQUAL(*tx_metadata.get_vout_index(), 1);
+    BOOST_REQUIRE_EQUAL(tx_metadata.get_change_path()->get_index(), 1);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

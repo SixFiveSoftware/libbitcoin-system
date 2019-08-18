@@ -46,20 +46,15 @@ coinninja::transaction::transaction_metadata transaction_builder::generate_tx_me
     if (data.should_add_change_to_transaction())
     {
         coinninja::address::usable_address change{master_private_key, data.change_path};
-        auto change_payment_address{change.build_payment_address()};
-        auto change_address{change_payment_address.encoded()};
+        auto change_address{change.build_change_address().get_address()};
         auto change_path{data.change_path};
         uint vout_index{0};
 
-        using namespace bc::wallet;
-        auto pkver = (coin.get_coin() == 0) ? payment_address::mainnet_p2kh : payment_address::testnet_p2kh;
-        auto shver = (coin.get_coin() == 0) ? payment_address::mainnet_p2sh : payment_address::testnet_p2sh;
-
         for (size_t i{0}; i < transaction.outputs().size(); ++i)
         {
+            auto check_output{output_with_address(change_address, data.change_amount)};
             auto output = transaction.outputs().at(i);
-            std::string possible_change_address{output.address(pkver, shver).encoded()};
-            if (possible_change_address == change_address)
+            if (check_output == output)
             {
                 vout_index = static_cast<uint>(i);
             }
@@ -84,8 +79,14 @@ bc::chain::transaction transaction_builder::transaction_from_data(const coinninj
     if (data.should_add_change_to_transaction())
     {
         coinninja::address::usable_address change{master_private_key, data.change_path};
-        auto change_address{change.build_payment_address()};
-        transaction.outputs().push_back(create_p2sh_output(change_address, data.change_amount));
+        if (coin.get_purpose() == coin_derivation_purpose::BIP84)
+        {
+            auto change_address{change.build_change_address().get_address()};
+            transaction.outputs().push_back(create_segwit_output(change_address, coin.get_bech32_hrp(), data.change_amount));
+        } else if (coin.get_purpose() == coin_derivation_purpose::BIP49) {
+            auto change_address{change.build_payment_address()};
+            transaction.outputs().push_back(create_p2sh_output(change_address, data.change_amount));
+        }
     }
 
     populate_utxos(transaction, data);
@@ -157,20 +158,10 @@ bc::machine::operation::list transaction_builder::create_segwit_hash_pattern(con
     };
 }
 
-bc::data_chunk transaction_builder::segwit_script_pubkey(const int &witver, std::vector<uint8_t>& witprog) {
-    bc::data_chunk script_pubkey{};
-    uint8_t witver_byte = (witver ? (0x80 | witver) : 0);
-    script_pubkey.push_back(witver_byte);
-    // script_pubkey.push_back(witprog.size());
-    script_pubkey.insert(script_pubkey.end(), witprog.begin(), witprog.end());
-    return script_pubkey;
-}
-
 void transaction_builder::populate_utxos(bc::chain::transaction &tx, const coinninja::transaction::transaction_data &data)
 {
     for (auto &utxo : data.unspent_transaction_outputs)
     {
-        // for a P2SH(P2WPKH) input
         // previous tx hash
         bc::hash_digest prev_tx_hash;
         bc::decode_hash(prev_tx_hash, utxo.txid);
@@ -201,7 +192,6 @@ void transaction_builder::populate_utxos(bc::chain::transaction &tx, const coinn
 
 void transaction_builder::sign_inputs(bc::chain::transaction &tx, const coinninja::transaction::transaction_data &data)
 {
-    // P2SH(P2WPKH) signing
     for (size_t i{0}; i < data.unspent_transaction_outputs.size(); i++)
     {
         auto utxo{data.unspent_transaction_outputs[i]};
