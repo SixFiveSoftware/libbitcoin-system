@@ -25,9 +25,9 @@ namespace wallet {
 /**
  * static methods
  */
-bc::wallet::hd_private key_factory::index_private_key(bc::wallet::hd_private const &master_key, coinninja::wallet::derivation_path &path)
+bc::wallet::hd_private key_factory::index_private_key(bc::wallet::hd_private const &master_private_key, coinninja::wallet::derivation_path &path)
 {
-    const auto purpose_key = master_key.derive_private(path.get_hardened_purpose());
+    const auto purpose_key = master_private_key.derive_private(path.get_hardened_purpose());
     const auto coin_key = purpose_key.derive_private(path.get_hardened_coin());
     const auto account_key = coin_key.derive_private(path.get_hardened_account());
     const auto change_key = account_key.derive_private(path.get_change());
@@ -35,15 +35,20 @@ bc::wallet::hd_private key_factory::index_private_key(bc::wallet::hd_private con
     return index_key;
 }
 
-bc::wallet::hd_public key_factory::index_public_key(bc::wallet::hd_private const &master_key, coinninja::wallet::derivation_path &path)
+bc::wallet::hd_public key_factory::index_public_key(bc::wallet::hd_private const &master_private_key, coinninja::wallet::derivation_path &path)
 {
-    return key_factory::index_private_key(master_key, path).to_public();
+    return key_factory::index_private_key(master_private_key, path).to_public();
 }
 
-bc::wallet::hd_private key_factory::signing_key(const bc::wallet::hd_private &private_key)
+bc::wallet::hd_private key_factory::signing_key(const bc::wallet::hd_private &master_private_key)
 {
     static const int signing_purpose{42};
-    return private_key.derive_private(signing_purpose);
+    return master_private_key.derive_private(signing_purpose);
+}
+
+std::string key_factory::coinninja_verification_key_hex_string(const bc::wallet::hd_private &master_private_key)
+{
+    return bc::encode_base16(signing_key(master_private_key).to_public().point());
 }
 
 } // namespace wallet

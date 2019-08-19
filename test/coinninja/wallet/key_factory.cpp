@@ -40,4 +40,15 @@ BOOST_AUTO_TEST_CASE(signing_key__returns_private_key)
     BOOST_REQUIRE_EQUAL(encoded, expected_encoded);
 }
 
+BOOST_AUTO_TEST_CASE(key_factory__verification_key_string)
+{
+    const coinninja::wallet::base_coin coin{};
+    const auto master_private_key{private_key_for(test_only_words, coin)};
+    const auto verification_string{coinninja::wallet::key_factory::coinninja_verification_key_hex_string(master_private_key)};
+
+    const std::string expected_string{"024458596b5c97e716e82015a72c37b5d3fe0c5dc70a4b83d72e7d2eb65920633e"};
+
+    BOOST_REQUIRE_EQUAL(verification_string, expected_string);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

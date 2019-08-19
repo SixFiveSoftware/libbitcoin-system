@@ -30,11 +30,12 @@ namespace coinninja {
 namespace wallet {
 
 struct key_factory {
-    static bc::wallet::hd_private index_private_key(bc::wallet::hd_private const &master_key, coinninja::wallet::derivation_path &path);
-    static bc::wallet::hd_public index_public_key(bc::wallet::hd_private const &master_key, coinninja::wallet::derivation_path &path);
+    static bc::wallet::hd_private index_private_key(bc::wallet::hd_private const &master_private_key, coinninja::wallet::derivation_path &path);
+    static bc::wallet::hd_public index_public_key(bc::wallet::hd_private const &master_private_key, coinninja::wallet::derivation_path &path);
 
     /// signing key
-    static bc::wallet::hd_private signing_key(const bc::wallet::hd_private &private_key);
+    static bc::wallet::hd_private signing_key(const bc::wallet::hd_private &master_private_key);
+    static std::string coinninja_verification_key_hex_string(const bc::wallet::hd_private &master_private_key);
 };
 
 } // namespace wallet
