@@ -40,5 +40,11 @@ bc::wallet::hd_public key_factory::index_public_key(bc::wallet::hd_private const
     return key_factory::index_private_key(master_key, path).to_public();
 }
 
+bc::wallet::hd_private key_factory::signing_key(const bc::wallet::hd_private &private_key)
+{
+    static const int signing_purpose{42};
+    return private_key.derive_private(signing_purpose);
+}
+
 } // namespace wallet
 } // namespace coinninja

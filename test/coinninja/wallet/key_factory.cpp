@@ -17,27 +17,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef COINNINJA_KEY_FACTORY_HPP
-#define COINNINJA_KEY_FACTORY_HPP
-
+#include <boost/test/unit_test.hpp>
 #include <bitcoin/bitcoin.hpp>
+#include <bitcoin/bitcoin/coinninja/wallet/key_factory.hpp>
 #include <bitcoin/bitcoin/coinninja/wallet/base_coin.hpp>
-#include <bitcoin/bitcoin/coinninja/wallet/derivation_path.hpp>
-#include <vector>
-#include <string>
+#include <test/test_helpers.hpp>
 
-namespace coinninja {
-namespace wallet {
+using namespace bc;
+using namespace bc::wallet;
 
-struct key_factory {
-    static bc::wallet::hd_private index_private_key(bc::wallet::hd_private const &master_key, coinninja::wallet::derivation_path &path);
-    static bc::wallet::hd_public index_public_key(bc::wallet::hd_private const &master_key, coinninja::wallet::derivation_path &path);
+BOOST_AUTO_TEST_SUITE(cn__key_factory__tests)
 
-    /// signing key
-    static bc::wallet::hd_private signing_key(const bc::wallet::hd_private &private_key);
-};
+BOOST_AUTO_TEST_CASE(signing_key__returns_private_key)
+{
+    const coinninja::wallet::base_coin coin{};
+    const auto master_private_key{private_key_for(test_only_words, coin)};
+    const auto signing_key{coinninja::wallet::key_factory::signing_key(master_private_key)};
+    const auto encoded{signing_key.encoded()};
 
-} // namespace wallet
-} // namespace coinninja
+    const std::string expected_encoded{"xprv9ukW2UsmeQPBDWViiTd81WaQHCm66iHgkoMtBeLEqnPyBhs5tvP54ee4FNRacQcCLkHtgxQx7BobhU3vpmCctRwXu8YLdnEZ2y4L32VCAmN"};
 
-#endif
+    BOOST_REQUIRE_EQUAL(encoded, expected_encoded);
+}
+
+BOOST_AUTO_TEST_SUITE_END()
