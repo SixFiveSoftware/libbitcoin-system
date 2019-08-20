@@ -63,6 +63,7 @@ src_libbitcoin_la_SOURCES = \
     src/coinninja/address/segwit_address.cpp \
     src/coinninja/address/usable_address.cpp \
     src/coinninja/encryption/cipher_keys.cpp \
+    src/coinninja/encryption/cipher_key_vendor.cpp \
     src/coinninja/encryption/encryption_cipher_keys.cpp \
     src/coinninja/transaction/transaction_builder.cpp \
     src/coinninja/transaction/transaction_data.cpp \
@@ -264,6 +265,7 @@ test_libbitcoin_test_SOURCES = \
     test/coinninja/wallet/data_signing.cpp \
     test/coinninja/wallet/key_factory.cpp \
     test/coinninja/wallet/mnemonic.cpp \
+    test/coinninja/encryption/cipher_key_vendor.cpp \
     test/coinninja/address/segwit_address.cpp \
     test/coinninja/address/address_helper.cpp \
     test/coinninja/address/usable_address.cpp \
@@ -412,6 +414,7 @@ include_bitcoin_bitcoin_coinninja_address_HEADERS = \
 include_bitcoin_bitcoin_coinninja_encryptiondir = ${includedir}/bitcoin/bitcoin/coinninja/encryption
 include_bitcoin_bitcoin_coinninja_encryption_HEADERS = \
     include/bitcoin/bitcoin/coinninja/encryption/cipher_keys.hpp \
+    include/bitcoin/bitcoin/coinninja/encryption/cipher_key_vendor.hpp \
     include/bitcoin/bitcoin/coinninja/encryption/encryption_cipher_keys.hpp
 
 include_bitcoin_bitcoin_coinninja_transactiondir = ${includedir}/bitcoin/bitcoin/coinninja/transaction
