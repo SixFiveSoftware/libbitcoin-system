@@ -21,6 +21,9 @@
  * THE SOFTWARE.
  */
 
+#ifndef COINNINJA_ADDRESS_BECH32_HPP
+#define COINNINJA_ADDRESS_BECH32_HPP
+
 #include <stdint.h>
 #include <vector>
 #include <string>
@@ -38,3 +41,5 @@ namespace bech32 {
 } // namespace bech32
 } // namespace address
 } // namespace coinninja
+
+#endif

@@ -21,6 +21,9 @@
  * THE SOFTWARE.
  */
 
+#ifndef COINNINJA_ADDRESS_SEGWIT_ADDRESS_HPP
+#define COINNINJA_ADDRESS_SEGWIT_ADDRESS_HPP
+
 #include <stdint.h>
 #include <vector>
 #include <string>
@@ -44,3 +47,5 @@ namespace segwit_address {
 } // namespace segwit_address
 } // namespace address
 } // namespace coinninja
+
+#endif
