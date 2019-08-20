@@ -28,10 +28,13 @@ namespace wallet {
 
 class data_signing {
 public:
+    /// Converts the call to sign_data to base16 encoded string.
     static std::string signature_signing_data(const bc::data_chunk &data, const bc::wallet::hd_private &master_private_key);
+
+    /// Verifies a given data chunk against its signed version.
     static bool verify_signed_data(const bc::data_chunk &data, const bc::data_chunk &signature, const bc::wallet::hd_private &master_private_key);
 
-private:
+    /// Signs a given data chunk, provided a master private key.
     static bc::data_chunk sign_data(const bc::data_chunk &data, const bc::wallet::hd_private &master_private_key);
 };
 

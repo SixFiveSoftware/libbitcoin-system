@@ -46,7 +46,6 @@ bool data_signing::verify_signed_data(const bc::data_chunk &data, const bc::data
     return false;
 }
 
-// private methods
 bc::data_chunk data_signing::sign_data(const bc::data_chunk &data, const bc::wallet::hd_private &master_private_key)
 {
     bc::hash_digest msg = bc::bitcoin_hash(data);
