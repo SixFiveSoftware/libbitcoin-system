@@ -21,6 +21,7 @@
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/bitcoin/coinninja/wallet/key_factory.hpp>
 #include <bitcoin/bitcoin/coinninja/wallet/base_coin.hpp>
+#include <bitcoin/bitcoin/coinninja/wallet/derivation_path.hpp>
 #include <test/test_helpers.hpp>
 
 using namespace bc;
@@ -49,6 +50,24 @@ BOOST_AUTO_TEST_CASE(key_factory__verification_key_string)
     const std::string expected_string{"024458596b5c97e716e82015a72c37b5d3fe0c5dc70a4b83d72e7d2eb65920633e"};
 
     BOOST_REQUIRE_EQUAL(verification_string, expected_string);
+}
+
+BOOST_AUTO_TEST_CASE(key_factory__index_private_key)
+{
+    const coinninja::wallet::base_coin coin{};
+    const auto master_private_key{private_key_for(test_only_words, coin)};
+    coinninja::wallet::derivation_path path{49, 0, 0, 0, 0};
+    const auto encoded{coinninja::wallet::key_factory::index_private_key(master_private_key, path).encoded()};
+    BOOST_REQUIRE_EQUAL(encoded, "xprvA3h3TvgWWPJYXCCqJxJF17hCCF1Dnwr1y5NV92Qxz29KR1Tv4ebniKNCmfikbnytAjVQNffNfLQM6UtBnQEUpHTkSx8DaqR8sLE7mEwGedG");
+}
+
+BOOST_AUTO_TEST_CASE(key_factory__index_public_key)
+{
+    const coinninja::wallet::base_coin coin{};
+    const auto master_private_key{private_key_for(test_only_words, coin)};
+    coinninja::wallet::derivation_path path{49, 0, 0, 0, 0};
+    const auto encoded{coinninja::wallet::key_factory::index_public_key(master_private_key, path).encoded()};
+    BOOST_REQUIRE_EQUAL(encoded, "xpub6GgPsSDQLkrqjgHJQyqFNFdvkGqiCQZsLJJ5wQpaYMgJHoo4cBv3G7ggcyG9uaNqrwv8n2jTRvSdVE3bEgGiVchutMkYNm2izzZ5RFUVm2P");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
