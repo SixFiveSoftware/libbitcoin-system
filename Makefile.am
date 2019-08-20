@@ -58,6 +58,7 @@ src_libbitcoin_la_SOURCES = \
     src/coinninja/wallet/mnemonic.cpp \
     src/coinninja/address/address_helper.hpp \
     src/coinninja/address/address_helper.cpp \
+    src/coinninja/address/base58check.cpp \
     src/coinninja/address/bech32.cpp \
     src/coinninja/address/meta_address.cpp \
     src/coinninja/address/segwit_address.cpp \
@@ -266,8 +267,9 @@ test_libbitcoin_test_SOURCES = \
     test/coinninja/wallet/key_factory.cpp \
     test/coinninja/wallet/mnemonic.cpp \
     test/coinninja/encryption/cipher_key_vendor.cpp \
-    test/coinninja/address/segwit_address.cpp \
     test/coinninja/address/address_helper.cpp \
+    test/coinninja/address/base58check.cpp \
+    test/coinninja/address/segwit_address.cpp \
     test/coinninja/address/usable_address.cpp \
     test/coinninja/transaction/transaction_builder.cpp \
     test/coinninja/transaction/transaction_data.cpp \
@@ -406,6 +408,7 @@ include_bitcoin_bitcoin_coinninja_wallet_HEADERS = \
 
 include_bitcoin_bitcoin_coinninja_addressdir = ${includedir}/bitcoin/bitcoin/coinninja/address
 include_bitcoin_bitcoin_coinninja_address_HEADERS = \
+    include/bitcoin/bitcoin/coinninja/address/base58check.hpp \
     include/bitcoin/bitcoin/coinninja/address/bech32.hpp \
     include/bitcoin/bitcoin/coinninja/address/meta_address.hpp \
     include/bitcoin/bitcoin/coinninja/address/segwit_address.hpp \
