@@ -51,24 +51,14 @@ bc::wallet::hd_private usable_address::build_index_private_key()
     return coinninja::wallet::key_factory::index_private_key(private_key, path);
 }
 
-coinninja::address::meta_address usable_address::build_receive_address()
+coinninja::address::meta_address usable_address::build_meta_address()
 {
-    auto address{generate_address()};
-    auto index_public_key{coinninja::wallet::key_factory::index_public_key(private_key, path)};
-    auto compressed{bc::wallet::ec_public{index_public_key}};
-    bc::ec_uncompressed uncompressed;
-    compressed.to_uncompressed(uncompressed);
-    auto uncompressed_chunk{bc::to_chunk(uncompressed)};
-    auto encoded_chunk{bc::encode_base16(uncompressed_chunk)};
-    meta_address meta_address{address, path, encoded_chunk};
-    return meta_address;
-}
-
-coinninja::address::meta_address usable_address::build_change_address()
-{
-    auto address{generate_address()};
-    meta_address meta_address{address, path};
-    return meta_address;
+    if (path.get_change() == 0)
+    {
+        return build_receive_address();
+    } else {
+        return build_change_address();
+    }
 }
 
 // private methods
@@ -123,6 +113,26 @@ std::string usable_address::p2wpkh_address()
     const auto witver{0};
     std::string address{coinninja::address::segwit_address::encode(hrp, witver, script_pub_key)};
     return address;
+}
+
+coinninja::address::meta_address usable_address::build_receive_address()
+{
+    auto address{generate_address()};
+    auto index_public_key{coinninja::wallet::key_factory::index_public_key(private_key, path)};
+    auto compressed{bc::wallet::ec_public{index_public_key}};
+    bc::ec_uncompressed uncompressed;
+    compressed.to_uncompressed(uncompressed);
+    auto uncompressed_chunk{bc::to_chunk(uncompressed)};
+    auto encoded_chunk{bc::encode_base16(uncompressed_chunk)};
+    meta_address meta_address{address, path, encoded_chunk};
+    return meta_address;
+}
+
+coinninja::address::meta_address usable_address::build_change_address()
+{
+    auto address{generate_address()};
+    meta_address meta_address{address, path};
+    return meta_address;
 }
 
 } // namespace transaction

@@ -135,12 +135,12 @@ BOOST_AUTO_TEST_CASE(usable_address__build_payment_address__native_segwit_mainne
     usable_address change_address2{master_private_key, change_path2};
 
     // then
-    BOOST_REQUIRE_EQUAL(address0.build_receive_address().get_address(), expected_address0);
-    BOOST_REQUIRE_EQUAL(address1.build_receive_address().get_address(), expected_address1);
-    BOOST_REQUIRE_EQUAL(address2.build_receive_address().get_address(), expected_address2);
-    BOOST_REQUIRE_EQUAL(change_address0.build_change_address().get_address(), expected_change_address0);
-    BOOST_REQUIRE_EQUAL(change_address1.build_change_address().get_address(), expected_change_address1);
-    BOOST_REQUIRE_EQUAL(change_address2.build_change_address().get_address(), expected_change_address2);
+    BOOST_REQUIRE_EQUAL(address0.build_meta_address().get_address(), expected_address0);
+    BOOST_REQUIRE_EQUAL(address1.build_meta_address().get_address(), expected_address1);
+    BOOST_REQUIRE_EQUAL(address2.build_meta_address().get_address(), expected_address2);
+    BOOST_REQUIRE_EQUAL(change_address0.build_meta_address().get_address(), expected_change_address0);
+    BOOST_REQUIRE_EQUAL(change_address1.build_meta_address().get_address(), expected_change_address1);
+    BOOST_REQUIRE_EQUAL(change_address2.build_meta_address().get_address(), expected_change_address2);
 }
 
 BOOST_AUTO_TEST_CASE(usable_address__build_payment_address__native_segwit_testnet)
@@ -172,12 +172,12 @@ BOOST_AUTO_TEST_CASE(usable_address__build_payment_address__native_segwit_testne
     usable_address change_address2{master_private_key, change_path2};
 
     // then
-    BOOST_REQUIRE_EQUAL(address0.build_receive_address().get_address(), expected_address0);
-    BOOST_REQUIRE_EQUAL(address1.build_receive_address().get_address(), expected_address1);
-    BOOST_REQUIRE_EQUAL(address2.build_receive_address().get_address(), expected_address2);
-    BOOST_REQUIRE_EQUAL(change_address0.build_change_address().get_address(), expected_change_address0);
-    BOOST_REQUIRE_EQUAL(change_address1.build_change_address().get_address(), expected_change_address1);
-    BOOST_REQUIRE_EQUAL(change_address2.build_change_address().get_address(), expected_change_address2);
+    BOOST_REQUIRE_EQUAL(address0.build_meta_address().get_address(), expected_address0);
+    BOOST_REQUIRE_EQUAL(address1.build_meta_address().get_address(), expected_address1);
+    BOOST_REQUIRE_EQUAL(address2.build_meta_address().get_address(), expected_address2);
+    BOOST_REQUIRE_EQUAL(change_address0.build_meta_address().get_address(), expected_change_address0);
+    BOOST_REQUIRE_EQUAL(change_address1.build_meta_address().get_address(), expected_change_address1);
+    BOOST_REQUIRE_EQUAL(change_address2.build_meta_address().get_address(), expected_change_address2);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

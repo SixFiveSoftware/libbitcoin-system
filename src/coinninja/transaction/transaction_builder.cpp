@@ -46,7 +46,7 @@ coinninja::transaction::transaction_metadata transaction_builder::generate_tx_me
     if (data.should_add_change_to_transaction())
     {
         coinninja::address::usable_address change{master_private_key, data.change_path};
-        auto change_address{change.build_change_address().get_address()};
+        auto change_address{change.build_meta_address().get_address()};
         auto change_path{data.change_path};
         uint vout_index{0};
 
@@ -81,7 +81,7 @@ bc::chain::transaction transaction_builder::transaction_from_data(const coinninj
         coinninja::address::usable_address change{master_private_key, data.change_path};
         if (coin.get_purpose() == coin_derivation_purpose::BIP84)
         {
-            auto change_address{change.build_change_address().get_address()};
+            auto change_address{change.build_meta_address().get_address()};
             transaction.outputs().push_back(create_segwit_output(change_address, coin.get_bech32_hrp(), data.change_amount));
         } else if (coin.get_purpose() == coin_derivation_purpose::BIP49) {
             auto change_address{change.build_payment_address()};

@@ -50,8 +50,7 @@ public:
     bc::ec_compressed build_compressed_public_key();
     bc::chain::script build_p2wpkh_script();
     bc::wallet::hd_private build_index_private_key();
-    coinninja::address::meta_address build_receive_address();
-    coinninja::address::meta_address build_change_address();
+    coinninja::address::meta_address build_meta_address();
 
 private:
     bc::wallet::hd_private private_key;
@@ -61,6 +60,8 @@ private:
     bc::wallet::payment_address p2wpkh_in_p2sh_address();
     std::string p2wpkh_address();
     bc::machine::operation::list witness_program();
+    coinninja::address::meta_address build_receive_address();
+    coinninja::address::meta_address build_change_address();
 };
 
 } // namespace transaction
