@@ -232,7 +232,12 @@ bool transaction_data::get_should_be_rbf() const
 
 uint32_t transaction_data::get_suggested_sequence() const
 {
-    return should_be_rbf ? bc::max_input_sequence - 2 : bc::max_input_sequence;
+    bool includes_unconfirmed_utxos{false};
+    for (const auto &utxo : unspent_transaction_outputs)
+    {
+        includes_unconfirmed_utxos = includes_unconfirmed_utxos || !utxo.is_confirmed;
+    }
+    return (should_be_rbf && includes_unconfirmed_utxos) ? bc::max_input_sequence - 2 : bc::max_input_sequence;
 }
 
 bool transaction_data::should_add_change_to_transaction() const
