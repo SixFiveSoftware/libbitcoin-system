@@ -59,11 +59,12 @@ bool transaction_data::create_transaction_data(coinninja::transaction::transacti
     uint64_t amount,
     uint16_t fee_rate,
     coinninja::wallet::derivation_path change_path,
-    uint64_t block_height
+    uint64_t block_height,
+    bool should_be_rbf
 )
 {
     coinninja::transaction::transaction_data return_data{
-        payment_address, coin, {}, amount, 0, 0, change_path, block_height
+        payment_address, coin, {}, amount, 0, 0, change_path, block_height, should_be_rbf
     };
 
     coinninja::address::address_helper helper{coin};
@@ -133,11 +134,12 @@ bool transaction_data::create_flat_fee_transaction_data(coinninja::transaction::
     uint64_t amount,
     uint64_t flat_fee,
     coinninja::wallet::derivation_path change_path,
-    uint64_t block_height
+    uint64_t block_height,
+    bool should_be_rbf
 )
 {
     coinninja::transaction::transaction_data return_data{
-        payment_address, coin, {}, amount, flat_fee, 0, change_path, block_height, true
+        payment_address, coin, {}, amount, flat_fee, 0, change_path, block_height, should_be_rbf
     };
 
     std::vector<coinninja::transaction::unspent_transaction_output> all_utxos_copy{all_unspent_transaction_outputs};
@@ -187,12 +189,13 @@ bool transaction_data::create_send_max_transaction_data(coinninja::transaction::
     coinninja::wallet::base_coin coin,
     std::string payment_address,
     uint16_t fee_rate,
-    uint64_t block_height
+    uint64_t block_height,
+    bool should_be_rbf
 )
 {
     coinninja::wallet::derivation_path dummy_change{}; // just used to satisfy parameter; not used as there is no change when sending max.
     coinninja::transaction::transaction_data return_data{
-        payment_address, coin, all_unspent_transaction_outputs, 0, 0, 0, dummy_change, block_height
+        payment_address, coin, all_unspent_transaction_outputs, 0, 0, 0, dummy_change, block_height, should_be_rbf
     };
 
     coinninja::address::address_helper helper{coin};
@@ -225,6 +228,11 @@ bool transaction_data::create_send_max_transaction_data(coinninja::transaction::
 bool transaction_data::get_should_be_rbf() const
 {
     return should_be_rbf;
+}
+
+uint32_t transaction_data::get_suggested_sequence() const
+{
+    return should_be_rbf ? bc::max_input_sequence - 2 : bc::max_input_sequence;
 }
 
 bool transaction_data::should_add_change_to_transaction() const

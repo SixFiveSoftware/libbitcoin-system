@@ -171,22 +171,14 @@ void transaction_builder::populate_utxos(bc::chain::transaction &tx, const coinn
         
         // build input from previous output
         bc::chain::output_point utxo_to_spend{prev_tx_hash, index};
-        bc::chain::input p2sh_p2wpkh_input;
-        p2sh_p2wpkh_input.set_previous_output(utxo_to_spend);
+        bc::chain::input input;
+        input.set_previous_output(utxo_to_spend);
 
         // set sequence
-        auto replaceable_seq{bc::max_input_sequence - 2};
-        auto non_replaceable_seq{bc::max_input_sequence};
-
-        if (data.get_should_be_rbf()) {
-            p2sh_p2wpkh_input.set_sequence(replaceable_seq);
-        } else {
-            auto seq = (utxo.is_confirmed) ? non_replaceable_seq : replaceable_seq;
-            p2sh_p2wpkh_input.set_sequence(seq);
-        }
+        input.set_sequence(data.get_suggested_sequence());
 
         // add input to tx outputs
-        tx.inputs().push_back(p2sh_p2wpkh_input);
+        tx.inputs().push_back(input);
     }
 }
 

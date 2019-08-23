@@ -60,6 +60,7 @@ public:
      * @param fee_rate The fee rate to be multiplied by transaction size
      * @param change_path The derivation path for receiving change, if any
      * @param block_height The current block height, used to calculate locktime (block_height + 1)
+     * @param should_be_rbf A value passed to the transaction builder later. Default value is false.
      * @return True with a populated reference as the first parameter if the object is able to satisfy amount+fee with UTXOs, or false if insufficient funds
      */
     static bool create_transaction_data(coinninja::transaction::transaction_data &data,
@@ -69,7 +70,8 @@ public:
         uint64_t amount,
         uint16_t fee_rate,
         coinninja::wallet::derivation_path change_path,
-        uint64_t block_height
+        uint64_t block_height,
+        bool should_be_rbf = false
         );
 
     /**
@@ -82,6 +84,7 @@ public:
      * @param flat_fee The flat-fee to pay, NOT a rate. This fee, added to amount, will equal the total deducted from the wallet.
      * @param change_path The derivation path for receiving change, if any.
      * @param block_height The current block height, used to calculate the locktime (blockHeight + 1).
+     * @param should_be_rbf A value passed to the transaction builder later. Default value is true for this case only.
      * @return True with a populated reference as the first parameter if the object is able to satisfy amount+fee with UTXOs, or false if insufficient funds
      */
     static bool create_flat_fee_transaction_data(coinninja::transaction::transaction_data &data,
@@ -91,7 +94,8 @@ public:
         uint64_t amount,
         uint64_t flat_fee,
         coinninja::wallet::derivation_path change_path,
-        uint64_t block_height
+        uint64_t block_height,
+        bool should_be_rbf = true
     );
 
     /**
@@ -102,6 +106,7 @@ public:
      * @param paymentAddress The address to which you want to send currency.
      * @param fee_rate The fee rate to be multiplied by transaction size
      * @param block_height The current block height, used to calculate the locktime (blockHeight + 1).
+     * @param should_be_rbf A value passed to the transaction builder later. Default value is false.
      * @return True with a populated reference as the first parameter if the object is able to satisfy amount+fee with UTXOs, or false if insufficient funds
      */
     static bool create_send_max_transaction_data(coinninja::transaction::transaction_data &data,
@@ -109,7 +114,8 @@ public:
         coinninja::wallet::base_coin coin,
         std::string payment_address,
         uint16_t fee_rate,
-        uint64_t block_height
+        uint64_t block_height,
+        bool should_be_rbf = false
     );
 
     /**
@@ -127,6 +133,7 @@ public:
      * Member methods
      */
     bool get_should_be_rbf() const;
+    uint32_t get_suggested_sequence() const;
     bool should_add_change_to_transaction() const;
     coinninja::wallet::base_coin get_coin();
 
