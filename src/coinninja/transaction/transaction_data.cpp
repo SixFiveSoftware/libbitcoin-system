@@ -39,7 +39,8 @@ transaction_data::transaction_data(std::string payment_address,
     uint64_t change_amount,
     coinninja::wallet::derivation_path change_path,
     uint64_t block_height,
-    bool should_be_rbf
+    // bool should_be_rbf
+    replaceability_option rbf_replaceability_option
 )
     : payment_address{payment_address},
     coin{coin},
@@ -49,7 +50,8 @@ transaction_data::transaction_data(std::string payment_address,
     change_amount{change_amount},
     change_path{change_path},
     locktime{block_height},
-    should_be_rbf{should_be_rbf} { }
+    rbf_replaceability_option{rbf_replaceability_option}
+    { }
 
 // static creator methods
 bool transaction_data::create_transaction_data(coinninja::transaction::transaction_data &data,
@@ -60,11 +62,11 @@ bool transaction_data::create_transaction_data(coinninja::transaction::transacti
     uint16_t fee_rate,
     coinninja::wallet::derivation_path change_path,
     uint64_t block_height,
-    bool should_be_rbf
+    replaceability_option rbf_replaceability_option
 )
 {
     coinninja::transaction::transaction_data return_data{
-        payment_address, coin, {}, amount, 0, 0, change_path, block_height, should_be_rbf
+        payment_address, coin, {}, amount, 0, 0, change_path, block_height, rbf_replaceability_option
     };
 
     coinninja::address::address_helper helper{coin};
@@ -134,12 +136,12 @@ bool transaction_data::create_flat_fee_transaction_data(coinninja::transaction::
     uint64_t amount,
     uint64_t flat_fee,
     coinninja::wallet::derivation_path change_path,
-    uint64_t block_height,
-    bool should_be_rbf
+    uint64_t block_height
 )
 {
     coinninja::transaction::transaction_data return_data{
-        payment_address, coin, {}, amount, flat_fee, 0, change_path, block_height, should_be_rbf
+        payment_address, coin, {}, amount, flat_fee, 0, change_path, block_height,
+        coinninja::transaction::replaceability_option::must_be_rbf
     };
 
     std::vector<coinninja::transaction::unspent_transaction_output> all_utxos_copy{all_unspent_transaction_outputs};
@@ -189,13 +191,13 @@ bool transaction_data::create_send_max_transaction_data(coinninja::transaction::
     coinninja::wallet::base_coin coin,
     std::string payment_address,
     uint16_t fee_rate,
-    uint64_t block_height,
-    bool should_be_rbf
+    uint64_t block_height
 )
 {
     coinninja::wallet::derivation_path dummy_change{}; // just used to satisfy parameter; not used as there is no change when sending max.
     coinninja::transaction::transaction_data return_data{
-        payment_address, coin, all_unspent_transaction_outputs, 0, 0, 0, dummy_change, block_height, should_be_rbf
+        payment_address, coin, all_unspent_transaction_outputs, 0, 0, 0, dummy_change, block_height,
+        coinninja::transaction::replaceability_option::must_not_be_rbf
     };
 
     coinninja::address::address_helper helper{coin};
@@ -225,19 +227,38 @@ bool transaction_data::create_send_max_transaction_data(coinninja::transaction::
     return true;
 }
     
-bool transaction_data::get_should_be_rbf() const
+replaceability_option transaction_data::get_rbf_replaceability_option() const
 {
-    return should_be_rbf;
+    return rbf_replaceability_option;
 }
 
 uint32_t transaction_data::get_suggested_sequence() const
 {
-    bool includes_unconfirmed_utxos{false};
-    for (const auto &utxo : unspent_transaction_outputs)
+    switch (rbf_replaceability_option)
     {
-        includes_unconfirmed_utxos = includes_unconfirmed_utxos || !utxo.is_confirmed;
+    case replaceability_option::must_be_rbf:
+    {
+        return bc::max_input_sequence - 2;
     }
-    return (should_be_rbf && includes_unconfirmed_utxos) ? bc::max_input_sequence - 2 : bc::max_input_sequence;
+    
+    case replaceability_option::must_not_be_rbf:
+    {
+        return bc::max_input_sequence;
+    }
+
+    case replaceability_option::allowed:
+    {
+        bool includes_unconfirmed_utxos{false};
+        for (const auto &utxo : unspent_transaction_outputs)
+        {
+            includes_unconfirmed_utxos = includes_unconfirmed_utxos || !utxo.is_confirmed;
+        }
+        return includes_unconfirmed_utxos ? bc::max_input_sequence - 2 : bc::max_input_sequence;
+    }
+    
+    default:
+        return bc::max_input_sequence;
+    }
 }
 
 bool transaction_data::should_add_change_to_transaction() const

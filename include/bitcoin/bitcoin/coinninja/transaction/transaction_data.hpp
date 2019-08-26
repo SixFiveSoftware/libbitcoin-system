@@ -29,6 +29,21 @@
 namespace coinninja {
 namespace transaction {
 
+/**
+ * replaceability_option
+ * 
+ * Provides intention of Replace-By-Fee (RBF) behavior for the outgoing transaction.
+ * 
+ * must_be_rbf The transaction inputs must be set to a sequence lower than 0xFFFFFFFE.
+ * must_not_be_rbf The transaction inputs must be set to a sequence greater than 0xFFFFFFFE.
+ * allowed The transaction inputs will be set to not be RBF, iff the parent utxo is unconfirmed.
+ */
+enum replaceability_option {
+    must_be_rbf = 0,
+    must_not_be_rbf = 1,
+    allowed = 2
+};
+
 class transaction_data {
 public:
     /**
@@ -45,7 +60,7 @@ public:
         uint64_t change_amount,
         coinninja::wallet::derivation_path change_path,
         uint64_t block_height,
-        bool should_be_rbf = false
+        replaceability_option replaceability_option = coinninja::transaction::replaceability_option::must_not_be_rbf
         );
     
     // static creation methods
@@ -60,7 +75,7 @@ public:
      * @param fee_rate The fee rate to be multiplied by transaction size
      * @param change_path The derivation path for receiving change, if any
      * @param block_height The current block height, used to calculate locktime (block_height + 1)
-     * @param should_be_rbf A value passed to the transaction builder later. Default value is false.
+     * @param replaceability_option A value passed to the transaction builder later. Default value is allowed, allowing rbf to be determined from utxo confirmation. Lightning funding should always use `must_not_be_rbf`.
      * @return True with a populated reference as the first parameter if the object is able to satisfy amount+fee with UTXOs, or false if insufficient funds
      */
     static bool create_transaction_data(coinninja::transaction::transaction_data &data,
@@ -71,7 +86,7 @@ public:
         uint16_t fee_rate,
         coinninja::wallet::derivation_path change_path,
         uint64_t block_height,
-        bool should_be_rbf = false
+        replaceability_option replaceability_option = coinninja::transaction::replaceability_option::allowed
         );
 
     /**
@@ -84,7 +99,6 @@ public:
      * @param flat_fee The flat-fee to pay, NOT a rate. This fee, added to amount, will equal the total deducted from the wallet.
      * @param change_path The derivation path for receiving change, if any.
      * @param block_height The current block height, used to calculate the locktime (blockHeight + 1).
-     * @param should_be_rbf A value passed to the transaction builder later. Default value is true for this case only.
      * @return True with a populated reference as the first parameter if the object is able to satisfy amount+fee with UTXOs, or false if insufficient funds
      */
     static bool create_flat_fee_transaction_data(coinninja::transaction::transaction_data &data,
@@ -94,8 +108,7 @@ public:
         uint64_t amount,
         uint64_t flat_fee,
         coinninja::wallet::derivation_path change_path,
-        uint64_t block_height,
-        bool should_be_rbf = true
+        uint64_t block_height
     );
 
     /**
@@ -106,7 +119,6 @@ public:
      * @param paymentAddress The address to which you want to send currency.
      * @param fee_rate The fee rate to be multiplied by transaction size
      * @param block_height The current block height, used to calculate the locktime (blockHeight + 1).
-     * @param should_be_rbf A value passed to the transaction builder later. Default value is false.
      * @return True with a populated reference as the first parameter if the object is able to satisfy amount+fee with UTXOs, or false if insufficient funds
      */
     static bool create_send_max_transaction_data(coinninja::transaction::transaction_data &data,
@@ -114,8 +126,7 @@ public:
         coinninja::wallet::base_coin coin,
         std::string payment_address,
         uint16_t fee_rate,
-        uint64_t block_height,
-        bool should_be_rbf = false
+        uint64_t block_height
     );
 
     /**
@@ -132,14 +143,14 @@ public:
     /**
      * Member methods
      */
-    bool get_should_be_rbf() const;
+    replaceability_option get_rbf_replaceability_option() const;
     uint32_t get_suggested_sequence() const;
     bool should_add_change_to_transaction() const;
     coinninja::wallet::base_coin get_coin();
 
 private:
     coinninja::wallet::base_coin coin;
-    bool should_be_rbf{false};
+    replaceability_option rbf_replaceability_option;
     static uint16_t dust_threshold();
     static uint16_t byte_estimate_for(uint8_t input_count, const std::string &payment_address, bool include_change_output, const coinninja::wallet::base_coin &coin);
 };
