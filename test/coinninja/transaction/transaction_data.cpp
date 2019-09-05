@@ -22,7 +22,7 @@
 #include <bitcoin/bitcoin/coinninja/transaction/transaction_data.hpp>
 #include <bitcoin/bitcoin/coinninja/transaction/unspent_transaction_output.hpp>
 #include <bitcoin/bitcoin/coinninja/wallet/derivation_path.hpp>
-#include <src/coinninja/address/address_helper.hpp>
+#include <bitcoin/bitcoin/coinninja/address/address_helper.hpp>
 #include <string>
 #include <vector>
 

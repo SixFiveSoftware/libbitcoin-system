@@ -18,7 +18,7 @@
  */
 
 #include <bitcoin/bitcoin/coinninja/transaction/transaction_data.hpp>
-#include <src/coinninja/address/address_helper.hpp>
+#include <bitcoin/bitcoin/coinninja/address/address_helper.hpp>
 
 namespace coinninja {
 namespace transaction {

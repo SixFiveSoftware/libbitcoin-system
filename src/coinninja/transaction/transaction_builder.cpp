@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <src/coinninja/address/address_helper.hpp>
+#include <bitcoin/bitcoin/coinninja/address/address_helper.hpp>
 #include <bitcoin/bitcoin/coinninja/transaction/transaction_builder.hpp>
 #include <bitcoin/bitcoin/coinninja/address/segwit_address.hpp>
 #include <bitcoin/bitcoin/coinninja/address/usable_address.hpp>

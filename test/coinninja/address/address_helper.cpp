@@ -19,7 +19,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include <bitcoin/bitcoin.hpp>
-#include <src/coinninja/address/address_helper.hpp>
+#include <bitcoin/bitcoin/coinninja/address/address_helper.hpp>
 #include <bitcoin/bitcoin/coinninja/wallet/base_coin.hpp>
 
 using namespace coinninja;

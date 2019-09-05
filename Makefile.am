@@ -408,6 +408,7 @@ include_bitcoin_bitcoin_coinninja_wallet_HEADERS = \
 
 include_bitcoin_bitcoin_coinninja_addressdir = ${includedir}/bitcoin/bitcoin/coinninja/address
 include_bitcoin_bitcoin_coinninja_address_HEADERS = \
+    include/bitcoin/bitcoin/coinninja/address/address_helper.hpp \
     include/bitcoin/bitcoin/coinninja/address/base58check.hpp \
     include/bitcoin/bitcoin/coinninja/address/bech32.hpp \
     include/bitcoin/bitcoin/coinninja/address/meta_address.hpp \
