@@ -29,13 +29,36 @@ namespace encryption {
 
 class cipher_key_vendor {
 public:
-  static coinninja::encryption::cipher_keys decryption_cipher_keys(const bc::wallet::hd_private &master_private_key, const bc::data_chunk &public_key_data);
-  static coinninja::encryption::encryption_cipher_keys encryption_cipher_keys_for_uncompressed_public_key(const bc::data_chunk &public_key_data, const bc::data_chunk &entropy);
+    /**
+     * decryption_cipher_keys
+     * Do not pass in the master private key, this should be the private key associated with the public key used to encrypt.
+     * @param private_key The private key for the corresponding key needed to decrypt, NOT the master private key.
+     * @param public_key_data The counterparty's public key.
+     * @return A cipher_keys instance containing encryption key and hmac key.
+     */
+    static coinninja::encryption::cipher_keys decryption_cipher_keys(const bc::wallet::hd_private &private_key, const bc::data_chunk &public_key_data);
+
+    /**
+     * encryption_cipher_keys_for_uncompressed_public_key
+     * @param public_key_data The uncompressed public key of the recipient of the encrypted payload.
+     * @param entropy Client-provided secure random entropy to be used for creating the ephemeral key-pair.
+     * @return An encryption_cipher_keys instance containing the encryption key, hmac key, and ephemeral public key.
+     */
+    static coinninja::encryption::encryption_cipher_keys encryption_cipher_keys_for_uncompressed_public_key(const bc::data_chunk &public_key_data, const bc::data_chunk &entropy);
+
+    /**
+     * encryption_cipher_keys_for_uncompressed_public_key
+     * @param public_key_data The uncompressed public key of the recipient of the encrypted payload.
+     * @param private_key The private key needed to generate the shared secret, if known ahead of time and not ephemeral.
+     * @return An encryption_cipher_keys instance containing the encryption key, hmac key, and associated public key.
+     */
+    static coinninja::encryption::encryption_cipher_keys encryption_cipher_keys_for_uncompressed_public_key(const bc::data_chunk &public_key_data, const bc::wallet::hd_private &private_key);
 
 private:
-  static coinninja::encryption::cipher_keys cipher_keys_with_secret_key_and_public_key(const bc::ec_secret &secret_key, const bc::data_chunk &public_key_data);
-  static bc::data_chunk generate_shared_secret(const bc::ec_secret &secret_key, bc::ec_uncompressed &uncompressed_public_key);
-  static bc::ec_uncompressed uncompressed_public_key(const bc::data_chunk &public_key_data);
+    static coinninja::encryption::cipher_keys cipher_keys_with_secret_key_and_public_key(const bc::ec_secret &secret_key, const bc::data_chunk &public_key_data);
+    static bc::data_chunk generate_shared_secret(const bc::ec_secret &secret_key, bc::ec_uncompressed &uncompressed_public_key);
+    static bc::ec_uncompressed uncompressed_public_key(const bc::data_chunk &public_key_data);
+    static coinninja::encryption::encryption_cipher_keys encryption_cipher_keys(const bc::ec_secret &secret, const bc::data_chunk &public_key_data);
 
 };
 

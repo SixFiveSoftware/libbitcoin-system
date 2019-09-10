@@ -22,13 +22,14 @@
 #include <bitcoin/bitcoin/coinninja/encryption/cipher_key_vendor.hpp>
 #include <bitcoin/bitcoin/coinninja/encryption/encryption_cipher_keys.hpp>
 #include <bitcoin/bitcoin/coinninja/encryption/cipher_keys.hpp>
+#include <test/test_helpers.hpp>
 #include <vector>
 
 using namespace coinninja::encryption;
 
 BOOST_AUTO_TEST_SUITE(coinninja_encryption_keys)
 
-BOOST_AUTO_TEST_CASE(encryption_cipher_keys)
+BOOST_AUTO_TEST_CASE(encryption_cipher_keys__creating_ephemeral_keys)
 {
     const std::string uncompressed_public_key{"04904240a0aaec6af6f9b6c331f71feea2a4ed1549c06e5a6409fe92c5824dc4c54e26c2b2e27cfc224a6b782b35a2872b666f568cf37456262fbb065601b4d73a"};
     bc::data_chunk key_data;
@@ -49,6 +50,26 @@ BOOST_AUTO_TEST_CASE(encryption_cipher_keys)
     const auto hmac1{keys1.get_hmac_key()};
     const auto hmac2{keys2.get_hmac_key()};
     BOOST_REQUIRE_NE(bc::encode_base16(hmac1), bc::encode_base16(hmac2));
+}
+
+BOOST_AUTO_TEST_CASE(encryption_cipher_keys__specific_private_key)
+{
+    auto coin{base_coin()};
+    auto private_key{private_key_for(test_only_words, coin)};
+    const std::string uncompressed_public_key{"04904240a0aaec6af6f9b6c331f71feea2a4ed1549c06e5a6409fe92c5824dc4c54e26c2b2e27cfc224a6b782b35a2872b666f568cf37456262fbb065601b4d73a"};
+    bc::data_chunk key_data;
+    bc::decode_base16(key_data, uncompressed_public_key);
+
+    auto keys1{cipher_key_vendor::encryption_cipher_keys_for_uncompressed_public_key(key_data, private_key)};
+    auto keys2{cipher_key_vendor::encryption_cipher_keys_for_uncompressed_public_key(key_data, private_key)};
+
+    const auto enc1{keys1.get_encryption_key()};
+    const auto enc2{keys2.get_encryption_key()};
+    BOOST_REQUIRE_EQUAL(bc::encode_base16(enc1), bc::encode_base16(enc2));
+
+    const auto hmac1{keys1.get_hmac_key()};
+    const auto hmac2{keys2.get_hmac_key()};
+    BOOST_REQUIRE_EQUAL(bc::encode_base16(hmac1), bc::encode_base16(hmac2));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

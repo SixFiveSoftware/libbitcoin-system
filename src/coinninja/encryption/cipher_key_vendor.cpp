@@ -22,9 +22,9 @@
 namespace coinninja {
 namespace encryption {
 
-coinninja::encryption::cipher_keys cipher_key_vendor::decryption_cipher_keys(const bc::wallet::hd_private &master_private_key, const bc::data_chunk &public_key_data)
+coinninja::encryption::cipher_keys cipher_key_vendor::decryption_cipher_keys(const bc::wallet::hd_private &private_key, const bc::data_chunk &public_key_data)
 {
-    bc::ec_secret secret_key{master_private_key.secret()};
+    bc::ec_secret secret_key{private_key.secret()};
     coinninja::encryption::cipher_keys keys{cipher_keys_with_secret_key_and_public_key(secret_key, public_key_data)};
     return keys;
 }
@@ -35,19 +35,13 @@ coinninja::encryption::encryption_cipher_keys cipher_key_vendor::encryption_ciph
     auto entropy_byte_array = bc::to_array<bc::ec_secret_size>(entropy);
     bc::ec_secret secret_key{entropy_byte_array};
 
-    cipher_keys keys{cipher_keys_with_secret_key_and_public_key(secret_key, public_key_data)};
+    return encryption_cipher_keys(secret_key, public_key_data);
+}
 
-    // get uncompressed public key from ephemeral secret
-    bc::ec_uncompressed ephemeral_public_key;
-    bc::wallet::ec_public(secret_key).to_uncompressed(ephemeral_public_key);
-    bc::data_chunk eph_pubkey_output(sizeof(ephemeral_public_key));
-    std::copy(ephemeral_public_key.begin(), ephemeral_public_key.end(), eph_pubkey_output.begin());
-
-    // coinninja::encryption::encryption_cipher_keys encryption_keys{keys.get_encryption_key(), keys.get_hmac_key(), eph_pubkey_output};
-    auto enc{keys.get_encryption_key()};
-    auto hmac{keys.get_hmac_key()};
-    coinninja::encryption::encryption_cipher_keys encryption_keys{enc, hmac, eph_pubkey_output};
-    return encryption_keys;
+coinninja::encryption::encryption_cipher_keys cipher_key_vendor::encryption_cipher_keys_for_uncompressed_public_key(const bc::data_chunk &public_key_data, const bc::wallet::hd_private &private_key)
+{
+    bc::ec_secret secret_key{private_key.secret()};
+    return encryption_cipher_keys(secret_key, public_key_data);
 }
 
 // private
@@ -86,6 +80,22 @@ bc::ec_uncompressed cipher_key_vendor::uncompressed_public_key(const bc::data_ch
     bc::ec_uncompressed recipient_uncompressed_pubkey;
     ec_public_key.to_uncompressed(recipient_uncompressed_pubkey);
     return recipient_uncompressed_pubkey;
+}
+
+coinninja::encryption::encryption_cipher_keys cipher_key_vendor::encryption_cipher_keys(const bc::ec_secret &secret, const bc::data_chunk &public_key_data)
+{
+    cipher_keys keys{cipher_keys_with_secret_key_and_public_key(secret, public_key_data)};
+
+    bc::ec_uncompressed uncompressed_public_key;
+    bc::wallet::ec_public(secret).to_uncompressed(uncompressed_public_key);
+    bc::data_chunk pubkey_output(sizeof(uncompressed_public_key));
+    std::copy(uncompressed_public_key.begin(), uncompressed_public_key.end(), pubkey_output.begin());
+
+    auto enc{keys.get_encryption_key()};
+    auto hmac{keys.get_hmac_key()};
+    coinninja::encryption::encryption_cipher_keys encryption_keys{enc, hmac, pubkey_output};
+
+    return encryption_keys;
 }
 
 } // namespace encryption
