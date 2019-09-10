@@ -28,12 +28,12 @@ namespace encryption {
 
 class encryption_cipher_keys: public cipher_keys {
 public:
-    encryption_cipher_keys(bc::hash_digest &encryption_key, bc::hash_digest &hmac_key, bc::data_chunk &ephemeral_public_key);
+    encryption_cipher_keys(bc::hash_digest &encryption_key, bc::hash_digest &hmac_key, bc::data_chunk &associated_public_key);
 
-    bc::data_chunk get_ephemeral_public_key() const;
+    bc::data_chunk get_associated_public_key() const;
 
 private:
-    bc::data_chunk ephemeral_public_key;
+    bc::data_chunk associated_public_key;
 
 };
 

@@ -22,13 +22,13 @@
 namespace coinninja {
 namespace encryption {
 
-encryption_cipher_keys::encryption_cipher_keys(bc::hash_digest &encryption_key, bc::hash_digest &hmac_key, bc::data_chunk &ephemeral_public_key)
-    : cipher_keys{encryption_key, hmac_key}, ephemeral_public_key{ephemeral_public_key}
+encryption_cipher_keys::encryption_cipher_keys(bc::hash_digest &encryption_key, bc::hash_digest &hmac_key, bc::data_chunk &associated_public_key)
+    : cipher_keys{encryption_key, hmac_key}, associated_public_key{associated_public_key}
 { }
 
-bc::data_chunk encryption_cipher_keys::get_ephemeral_public_key() const
+bc::data_chunk encryption_cipher_keys::get_associated_public_key() const
 {
-    return ephemeral_public_key;
+    return associated_public_key;
 }
 
 } // namespace encryption
