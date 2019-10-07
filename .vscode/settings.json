@@ -85,6 +85,9 @@
         "*.tcc": "cpp",
         "memory_resource": "cpp",
         "cfenv": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "regex": "cpp",
+        "shared_mutex": "cpp",
+        "unordered_set": "cpp"
     }
 }

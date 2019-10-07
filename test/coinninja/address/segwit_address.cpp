@@ -198,6 +198,10 @@ BOOST_AUTO_TEST_CASE(segwit__valid_addresses)
         const bool recode_equal = case_insensitive_equal(recode, address.address);
         BOOST_REQUIRE(recode_equal);
     }
+
+    const std::string uppercased{"BC1QGLR9XMFT6Y2KXXWMMWRJSKKLCWZPSPMZZWMY22"};
+    auto decoded{coinninja::address::segwit_address::decode("BC", uppercased)};
+    BOOST_REQUIRE_NE(decoded.first, -1);
 }
 
 BOOST_AUTO_TEST_CASE(segwit__invalid_addresses)

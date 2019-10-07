@@ -23,6 +23,7 @@
 
 #include <bitcoin/bitcoin/coinninja/address/bech32.hpp>
 #include <bitcoin/bitcoin/coinninja/address/segwit_address.hpp>
+#include <boost/algorithm/string.hpp>
 
 #define kP2WPKHProgramSize 20
 #define kP2WSHProgramSize 32
@@ -64,8 +65,10 @@ namespace segwit_address {
 
     /** Decode a SegWit address. */
     std::pair<int, data> decode(const std::string& hrp, const std::string& addr) {
-        std::pair<std::string, data> dec = coinninja::address::bech32::decode(addr);
-        if (dec.first != hrp || dec.second.size() < 1) return std::make_pair(-1, data());
+        auto hrp_copy = boost::algorithm::to_lower_copy(hrp);
+        auto addr_copy = boost::algorithm::to_lower_copy(addr);
+        std::pair<std::string, data> dec = coinninja::address::bech32::decode(addr_copy);
+        if (dec.first != hrp_copy || dec.second.size() < 1) return std::make_pair(-1, data());
         data conv;
         if (!convertbits<5, 8, false>(conv, data(dec.second.begin() + 1, dec.second.end())) ||
             conv.size() < 2 || conv.size() > 40 || dec.second[0] > 16 || (dec.second[0] == 0 &&
