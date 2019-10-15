@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE(single_output__single_input__satisfies_amount)
     unspent_transaction_output output{"previous txid", 0, utxo_amount, utxo_path, true};
     std::vector<unspent_transaction_output> outputs{output};
     uint16_t fee_rate{30};
-    uint16_t total_bytes = helper.total_bytes(1, test_address, true);
+    uint32_t total_bytes{helper.total_bytes(1, test_address, true)};
     auto expected_fee_amount{fee_rate * total_bytes};  // 4,980
     auto expected_change_amount{utxo_amount - payment_amount - expected_fee_amount}; // 0.49995020
     auto expected_number_of_utxos{1};
@@ -81,7 +81,7 @@ BOOST_AUTO_TEST_CASE(single_output__double_input__and_change__satisfies_amount)
     unspent_transaction_output utxo2{"previous txid", 1, utxo_amount, utxo_path, true};
     std::vector<unspent_transaction_output> utxos{utxo1, utxo2};
     uint16_t fee_rate{30};
-    uint16_t total_bytes = helper.total_bytes(utxos.size(), test_address, true);
+    uint32_t total_bytes{helper.total_bytes(utxos.size(), test_address, true)};
     auto expected_fee_amount{fee_rate * total_bytes};  // 7,710
     auto amount_from_utxos{0};
     for (auto &utxo : utxos) { amount_from_utxos += utxo.amount; }
@@ -115,7 +115,7 @@ BOOST_AUTO_TEST_CASE(single_output__single_input__no_change__satisfies_amount)
     unspent_transaction_output utxo1{"previous txid", 0, utxo_amount, utxo_path, true};
     std::vector<unspent_transaction_output> utxos{utxo1};
     uint16_t fee_rate{30};
-    uint16_t total_bytes = helper.total_bytes(utxos.size(), test_address, false);
+    uint32_t total_bytes{helper.total_bytes(utxos.size(), test_address, false)};
     auto expected_fee_amount{fee_rate * total_bytes};  // 4,020
     auto expected_change_amount{0};
     auto expected_number_of_utxos{1};
@@ -149,7 +149,7 @@ BOOST_AUTO_TEST_CASE(single_output__double_input__no_change__satisfies_amount)
     unspent_transaction_output utxo2{"previous txid", 1, utxo_amount_2, utxo_path, true};
     std::vector<unspent_transaction_output> utxos{utxo1, utxo2};
     uint16_t fee_rate{30};
-    uint16_t total_bytes = helper.total_bytes(utxos.size(), test_address, false);
+    uint32_t total_bytes{helper.total_bytes(utxos.size(), test_address, false)};
     auto expected_fee_amount{fee_rate * total_bytes};  // 6,750
     auto expected_change_amount{0};
     auto expected_number_of_utxos{2};
@@ -207,7 +207,7 @@ BOOST_AUTO_TEST_CASE(native_segwit_output__p2sh_segwit_input__returns_true)
     unspent_transaction_output utxo2{"previous txid", 1, utxo_amount_2, utxo_path, true};
     std::vector<unspent_transaction_output> utxos{utxo1, utxo2};
     uint16_t fee_rate{30};
-    uint16_t total_bytes = helper.total_bytes(utxos.size(), segwit_address, true);
+    uint32_t total_bytes{helper.total_bytes(utxos.size(), segwit_address, true)};
     auto expected_fee_amount{fee_rate * total_bytes};  // 7,680
     auto expected_change_amount{9992320}; // 0.6BTC - 0.5BTC - 0.00007680BTC fee
     auto expected_number_of_utxos{2};
@@ -241,7 +241,7 @@ BOOST_AUTO_TEST_CASE(cost_of_change__is_beneficial)
     std::vector<unspent_transaction_output> utxos{utxo1, utxo2};
     derivation_path change_path{coin_derivation_purpose::BIP49, coin_derivation_coin::MainNet, 0, 1, 5};
     uint16_t fee_rate{10};
-    uint16_t total_bytes{helper.total_bytes(utxos.size(), test_address, false)};
+    uint32_t total_bytes{helper.total_bytes(utxos.size(), test_address, false)};
     auto dusty_change{1100};
     auto expected_fee_amount{fee_rate * total_bytes + dusty_change}; // 2,250 + 1,100 = 3,350
     auto payment_amount{utxo1.amount + utxo2.amount - expected_fee_amount}; // 200,000 - 3,350 = 196,650

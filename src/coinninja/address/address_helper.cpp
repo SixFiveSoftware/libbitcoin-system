@@ -72,7 +72,7 @@ uint16_t address_helper::bytes_per_change_output()
     }
 }
 
-uint16_t address_helper::total_bytes(uint8_t number_of_inputs, std::string address, bool include_change_address)
+uint32_t address_helper::total_bytes(uint16_t number_of_inputs, std::string address, bool include_change_address)
 {
     auto input_size = bytes_per_input();
     auto change_size = (include_change_address ? bytes_per_change_output() : 0);

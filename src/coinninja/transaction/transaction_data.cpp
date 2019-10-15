@@ -87,7 +87,7 @@ bool transaction_data::create_transaction_data(coinninja::transaction::transacti
             required_inputs.push_back(output);
             number_of_inputs++;
             total_from_utxos += output.amount;
-            uint16_t total_bytes{byte_estimate_for(number_of_inputs, payment_address, false, coin)};
+            uint32_t total_bytes{byte_estimate_for(number_of_inputs, payment_address, false, coin)};
             current_fee = fee_rate * total_bytes;
             total_sending_value = amount + current_fee;
 
@@ -271,7 +271,7 @@ uint16_t transaction_data::dust_threshold()
     return 1000;
 }
 
-uint16_t transaction_data::byte_estimate_for(uint8_t input_count, const std::string &payment_address, bool include_change_output, const coinninja::wallet::base_coin &coin)
+uint32_t transaction_data::byte_estimate_for(uint16_t input_count, const std::string &payment_address, bool include_change_output, const coinninja::wallet::base_coin &coin)
 {
     coinninja::address::address_helper helper{coin};
     return helper.total_bytes(input_count, payment_address, include_change_output);

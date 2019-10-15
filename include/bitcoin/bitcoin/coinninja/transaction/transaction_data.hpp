@@ -152,7 +152,7 @@ private:
     coinninja::wallet::base_coin coin;
     replaceability_option rbf_replaceability_option;
     static uint16_t dust_threshold();
-    static uint16_t byte_estimate_for(uint8_t input_count, const std::string &payment_address, bool include_change_output, const coinninja::wallet::base_coin &coin);
+    static uint32_t byte_estimate_for(uint16_t input_count, const std::string &payment_address, bool include_change_output, const coinninja::wallet::base_coin &coin);
 };
 
 } // namespace transaction

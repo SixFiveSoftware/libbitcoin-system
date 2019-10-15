@@ -55,7 +55,7 @@ public:
     uint16_t bytes_per_change_output();
 
     /// total bytes with number of inputs, destination payment address, optionally including change address
-    uint16_t total_bytes(uint8_t number_of_inputs, std::string address, bool include_change_address);
+    uint32_t total_bytes(uint16_t number_of_inputs, std::string address, bool include_change_address);
 
 private:
     coinninja::wallet::base_coin coin;

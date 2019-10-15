@@ -23,7 +23,7 @@ namespace coinninja {
 namespace transaction {
 
 unspent_transaction_output::unspent_transaction_output(std::string txid,
-    uint8_t index,
+    uint32_t index,
     uint64_t amount,
     coinninja::wallet::derivation_path path,
     bool is_confirmed
