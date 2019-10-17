@@ -29,6 +29,13 @@ namespace coinninja {
 namespace wallet {
 
     word_list all_bip_39_words();
+
+    /**
+     * Creates a mnemonic word list, given a source of secure random entropy.
+     * @param entropy Bytes of secure random entropy provided by device. DO NOT use pseudo_random_fill in production.
+     * @param lexicon Language of words, default is en.
+     * @return A word_list (std::vector<std::string>) of words, relative to the size of entropy received, or an empty vector if checksum failed. If empty, try again with new entropy.
+     */
     word_list create_mnemonic(const data_slice &entropy, const dictionary &lexicon=language::en);
 
 } // namespace wallet

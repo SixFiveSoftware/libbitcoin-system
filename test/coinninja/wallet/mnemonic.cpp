@@ -69,4 +69,15 @@ BOOST_AUTO_TEST_CASE(mnemonic__init_with_entropy__creates_mnemonic)
     BOOST_REQUIRE_EQUAL(mnemonic.size(), 12);
 }
 
+BOOST_AUTO_TEST_CASE(mnemonic__init_with_bad_entropy__returns_empty_word_list)
+{
+    const int len{15};
+    bc::data_chunk entropy(len);
+    for (size_t i{0}; i < len; i++) {
+        entropy.at(i) = 0xFF;
+    }
+    const auto mnemonic = coinninja::wallet::create_mnemonic(entropy);
+    BOOST_REQUIRE_EQUAL(mnemonic.size(), 0);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
