@@ -39,11 +39,11 @@ word_list all_bip_39_words()
 word_list create_mnemonic(const data_slice &entropy, const dictionary &lexicon)
 {
     word_list mnemonic{bc::wallet::create_mnemonic(entropy, lexicon)};
-    if (bc::wallet::validate_mnemonic(mnemonic))
+    if (bc::wallet::validate_mnemonic(mnemonic, lexicon))
     {
         return mnemonic;
     } else {
-        throw "Invalid mnemonic";
+        return {};
     }
 }
 
