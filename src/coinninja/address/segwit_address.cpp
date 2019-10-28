@@ -94,7 +94,11 @@ namespace segwit_address {
             return false;
         }
 
-        std::string hrp = address.substr(0,2);
+        auto separator_pos{address.find("1")};
+        if (separator_pos == std::string::npos) {
+            return false;
+        }
+        std::string hrp{address.substr(0, separator_pos)};
         auto decoded = decode(hrp, address);
         return (decoded.first != -1) && (decoded.second.size() == kP2WPKHProgramSize);
     }
@@ -105,7 +109,11 @@ namespace segwit_address {
             return false;
         }
 
-        std::string hrp = address.substr(0,2);
+        auto separator_pos{address.find("1")};
+        if (separator_pos == std::string::npos) {
+            return false;
+        }
+        std::string hrp{address.substr(0, separator_pos)};
         auto decoded = decode(hrp, address);
         return (decoded.first != -1) && (decoded.second.size() == kP2WSHProgramSize);
     }
