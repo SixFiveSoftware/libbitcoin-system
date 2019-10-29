@@ -143,7 +143,7 @@ BOOST_AUTO_TEST_CASE(usable_address__build_payment_address__native_segwit_mainne
     BOOST_REQUIRE_EQUAL(change_address2.build_meta_address().get_address(), expected_change_address2);
 }
 
-BOOST_AUTO_TEST_CASE(usable_address__build_payment_address__native_segwit_testnet)
+BOOST_AUTO_TEST_CASE(usable_address__buid_payment_address__native_segwit_regtest)
 {
     //given
     base_coin coin;
@@ -154,12 +154,12 @@ BOOST_AUTO_TEST_CASE(usable_address__build_payment_address__native_segwit_testne
     derivation_path change_path1{84, 1, 0, 1, 1};
     derivation_path change_path2{84, 1, 0, 1, 2};
 
-    std::string expected_address0{"tb1q6rz28mcfaxtmd6v789l9rrlrusdprr9pqcpvkl"};
-    std::string expected_address1{"tb1qd7spv5q28348xl4myc8zmh983w5jx32cjhkn97"};
-    std::string expected_address2{"tb1qxdyjf6h5d6qxap4n2dap97q4j5ps6ua8sll0ct"};
-    std::string expected_change_address0{"tb1q9u62588spffmq4dzjxsr5l297znf3z6j5p2688"};
-    std::string expected_change_address1{"tb1qkwgskuzmmwwvqajnyr7yp9hgvh5y45kg8wvdmd"};
-    std::string expected_change_address2{"tb1q2vma00td2g9llw8hwa8ny3r774rtt7aenfn5zu"};
+    std::string expected_address0{"bcrt1q6rz28mcfaxtmd6v789l9rrlrusdprr9pz3cppk"};
+    std::string expected_address1{"bcrt1qd7spv5q28348xl4myc8zmh983w5jx32cs707jh"};
+    std::string expected_address2{"bcrt1qxdyjf6h5d6qxap4n2dap97q4j5ps6ua8jkxz0z"};
+    std::string expected_change_address0{"bcrt1q9u62588spffmq4dzjxsr5l297znf3z6jkgnhsw"};
+    std::string expected_change_address1{"bcrt1qkwgskuzmmwwvqajnyr7yp9hgvh5y45kg984qvy"};
+    std::string expected_change_address2{"bcrt1q2vma00td2g9llw8hwa8ny3r774rtt7ae3q2e44"};
 
     const auto master_private_key{private_key_for(test_only_words, coin)};
 

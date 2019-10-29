@@ -51,7 +51,7 @@ std::string base_coin::get_bech32_hrp()
     if (purpose != BIP84) {
         return "";
     }
-    return (coin == MainNet) ? "bc" : "tb";
+    return (coin == MainNet) ? "bc" : "bcrt";
 }
 
 } // namespace wallet
