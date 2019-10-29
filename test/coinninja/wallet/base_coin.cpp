@@ -64,7 +64,7 @@ BOOST_AUTO_TEST_CASE(base_coin__get_hrp_from_bip84_mainnet__is_valid)
 BOOST_AUTO_TEST_CASE(base_coin__get_hrp_from_bip84_testnet__is_valid)
 {
     coinninja::wallet::base_coin coin{coinninja::wallet::coin_derivation_purpose::BIP84, coinninja::wallet::coin_derivation_coin::TestNet};
-    BOOST_REQUIRE_EQUAL(coin.get_bech32_hrp(), "tb");
+    BOOST_REQUIRE_EQUAL(coin.get_bech32_hrp(), "bcrt");
 }
 
 BOOST_AUTO_TEST_CASE(base_coin__get_hrp_from_non_bip84__is_invalid)
