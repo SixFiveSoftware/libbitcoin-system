@@ -94,7 +94,7 @@ namespace segwit_address {
             return false;
         }
 
-        auto separator_pos{address.find("1")};
+        auto separator_pos{address.rfind("1")};
         if (separator_pos == std::string::npos) {
             return false;
         }
@@ -109,7 +109,7 @@ namespace segwit_address {
             return false;
         }
 
-        auto separator_pos{address.find("1")};
+        auto separator_pos{address.rfind("1")};
         if (separator_pos == std::string::npos) {
             return false;
         }
